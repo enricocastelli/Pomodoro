@@ -62,33 +62,34 @@ class CameraNode: SCNNode {
         
         if eulerAngles.y.rounded() == 6 { eulerAngles.y = 0 }
         if eulerAngles.y.rounded() == -3 { eulerAngles.y = Float.pi }
-        updateCameraValues(direction: direction)
+        updateCameraValues(direction: direction, isPointing: false)
     }
     
-    func updateCameraValues(direction: Direction) {
+    func updateCameraValues(direction: Direction, isPointing: Bool) {
         switch direction {
         case .North:
-            Values.xDistance = 0
-            Values.zDistance = 13
-            Values.yDistance = 4
+            Values.xDistance = isPointing ? 0 : 0
+            Values.zDistance = isPointing ? 0 : 13
+            Values.yDistance = isPointing ? 2 : 4
         case .East:
-            Values.xDistance = -13
-            Values.zDistance = 0
-            Values.yDistance = 4
+            Values.xDistance = isPointing ? 0 : -13
+            Values.zDistance = isPointing ? 0 : 0
+            Values.yDistance = isPointing ? 2 : 4
         case .West:
-            Values.xDistance = 13
-            Values.zDistance = 0
-            Values.yDistance = 4
+            Values.xDistance = isPointing ? 0 : 13
+            Values.zDistance = isPointing ? 0 : 0
+            Values.yDistance = isPointing ? 2 : 4
         case .South:
-            Values.xDistance = 0
-            Values.zDistance = -13
-            Values.yDistance = 4
+            Values.xDistance = isPointing ? 0 : 0
+            Values.zDistance = isPointing ? 0 : -13
+            Values.yDistance = isPointing ? 2 : 4
         default:
             break
         }
     }
     
     func configureForPointing() {
+        updateCameraValues(direction: direction, isPointing: true)
         storedDirection = direction
         camera!.vignettingPower = 0.7
         camera!.vignettingIntensity = 1
@@ -98,7 +99,7 @@ class CameraNode: SCNNode {
     }
     
     func removePointing() {
-        updateCameraValues(direction: storedDirection ?? direction)
+        updateCameraValues(direction: storedDirection ?? direction, isPointing: false)
         rotation = originalRotation
         eulerAngles.y = eulerForDirection(direction: storedDirection ?? direction)
         camera!.vignettingPower = 0

@@ -211,8 +211,6 @@ extension GameViewController: JoyDelegate {
         case .precision:
             if !pomodoro.isPointing {
                 pomodoro.isPointing = true
-                Values.yDistance = 2
-                Values.zDistance = 0
                 cameraNode.configureForPointing()
                 controller.insertShooterView()
             } else {

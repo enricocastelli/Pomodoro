@@ -43,7 +43,6 @@ class Joystick: UIView {
                 y: 50 + (loc.y - 50) / distance * radius
             )
         }
-        print(loc)
         delegate?.didMoveTo(x: loc.x, y: loc.y)
     }
     
