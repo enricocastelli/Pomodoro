@@ -17,11 +17,7 @@ class GameViewController: UIViewController {
     var scnView: SCNView!
     var scene: SCNScene!
     
-    var shooter: ShootButton!
-    var joystick: Joystick!
-    var army: ArmyButton!
-    var lifeProgress: UIProgressView!
-    
+    var controller: ControllerView!
     var direction = SCNVector3(0, 0, 0)
     var rotation = SCNVector4(0, 0, 0, 0)
     var angle = CGPoint(x: 0, y: 0)
@@ -52,8 +48,6 @@ class GameViewController: UIViewController {
         scene.rootNode.addChildNode(pomodoro)
         addControllers()
         addBoundaries()
-        addGesture()
-        addLife()
     }
     
     func executeEvent(event: Event) {
@@ -82,29 +76,15 @@ class GameViewController: UIViewController {
         }
     }
     
+    func rotateCamera(positive: Bool) {
+        cameraNode.rotate(positive: positive)
+        controller.rotateJoystick(angle: cameraNode.eulerAngles.y)
+    }
+    
     func addBoundaries() {
         for boundary in NodeCreator.createBoundaries() {
             scene.rootNode.addChildNode(boundary)
         }
-    }
-    
-    func addGesture() {
-        let doupleTap = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
-        doupleTap.numberOfTapsRequired = 2
-        view.addGestureRecognizer(doupleTap)
-        doupleTap.delegate = self
-        doupleTap.cancelsTouchesInView = false
-    }
-    
-    func addLife() {
-        lifeProgress = UIProgressView(frame: CGRect(x: 20, y: 16, width: 200, height: 20))
-        view.addSubview(lifeProgress)
-    }
-    
-    @objc func tapped(_ sender: UISwipeGestureRecognizer) {
-        let loc = sender.location(in: self.view)
-        cameraNode.rotate(positive: (loc.x >= view.center.x))
-        joystick.transform = CGAffineTransform.init(rotationAngle: CGFloat(cameraNode.eulerAngles.y))
     }
     
     func addImp(pos: SCNVector3, z: Bool) {
@@ -119,15 +99,8 @@ class GameViewController: UIViewController {
     }
 
     func addControllers() {
-        joystick = Joystick(frame: CGRect(x: 16, y: UIScreen.main.bounds.height - 116, width: 100, height: 100))
-        joystick.delegate = self
-        view.addSubview(joystick)
-        shooter = ShootButton(frame: CGRect(x: UIScreen.main.bounds.width - 116, y: UIScreen.main.bounds.height - 116, width: 100, height: 100))
-        shooter.delegate = self
-        view.addSubview(shooter)
-        army = ArmyButton(frame: CGRect(x: shooter.frame.origin.x - 64, y: UIScreen.main.bounds.height - 64, width: 40, height: 40), army: pomodoro.army)
-        army.delegate = self
-        view.addSubview(army)
+        controller = ControllerView(frame: view.frame, delegate: self)
+        view.addSubview(controller)
     }
     
     func shoot() {
@@ -183,9 +156,6 @@ extension GameViewController : SCNSceneRendererDelegate {
         }
         if pomodoro.isPointing {
             cameraNode.rotation = SCNVector4(0, -1, 0, rotation.w + Float.pi)
-        }
-        DispatchQueue.main.async {
-            self.lifeProgress.progress = Float(self.pomodoro.life)
         }
         checkOpp()
     }
@@ -243,6 +213,8 @@ extension GameViewController: JoyDelegate {
                 pomodoro.isPointing = true
                 Values.yDistance = 2
                 Values.zDistance = 0
+                cameraNode.configureForPointing()
+                controller.insertShooterView()
             } else {
                 shootPrecision()
             }
@@ -273,11 +245,13 @@ extension GameViewController: JoyDelegate {
         } else if pomodoro.army == .granade {
             pomodoro.army = .precision
         } else {
+                controller.removeShooterView()
+                cameraNode.removePointing()
+            pomodoro.isPointing = false
             pomodoro.army = .pomodorino
         }
-        army.army = pomodoro.army
+        controller.didChangeArmy(army: pomodoro.army)
     }
-    
 }
 
 extension GameViewController: FruitDelegate {
@@ -297,13 +271,3 @@ extension GameViewController: FruitDelegate {
     }
 }
 
-extension GameViewController: UIGestureRecognizerDelegate {
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        if (touch.view!.isDescendant(of: shooter)) || (touch.view!.isDescendant(of: joystick)) || (touch.view!.isDescendant(of: army)) {
-            return false
-        }
-        return true
-    }
-    
-}

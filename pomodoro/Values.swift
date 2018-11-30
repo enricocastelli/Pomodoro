@@ -17,6 +17,7 @@ class Values {
     static var yDistance: Float = 4
     static var xDistance: Float = 0
     static var zDistance: Float = 13
+    static var focalLength: CGFloat = 20.784608840942383
     
     /*
      static var zFar: Double = 70.0

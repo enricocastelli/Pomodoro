@@ -136,8 +136,9 @@ class NodeCreator {
         let geo = SCNSphere(radius: 0.2)
         geo.materials.first?.diffuse.contents = UIColor.blue
         let bulletNode = SCNNode(geometry: geo)
-        bulletNode.position = SCNVector3(position.x, 1, position.z)
+        bulletNode.position = SCNVector3(position.x, 3, position.z)
         bulletNode.physicsBody = SCNPhysicsBody.dynamic()
+        bulletNode.physicsBody?.isAffectedByGravity = false
         bulletNode.physicsBody?.contactTestBitMask = Collider.bulletOpp | Collider.opponent | Collider.impediment
         bulletNode.physicsBody?.categoryBitMask = Collider.bullet
         bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1

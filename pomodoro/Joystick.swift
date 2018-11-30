@@ -32,19 +32,24 @@ class Joystick: UIView {
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        var loc = touch.location(in: self)
-        if loc.y < 0 { loc.y = 0 }
-        else if loc.y > 100 { loc.y = 100 }
-        if loc.x < 0 { loc.x = 0 }
-        else if loc.x > 100 { loc.x = 100 }
-        self.pointer.center = loc
+        let loc = touch.location(in: self)
+        let radius: CGFloat = 50
+        let distance = hypot(loc.x - 50, loc.y - 50)
+        if distance <= radius {
+            pointer.center = loc
+        } else {
+            pointer.center = CGPoint(
+                x: 50 + (loc.x - 50) / distance * radius,
+                y: 50 + (loc.y - 50) / distance * radius
+            )
+        }
+        print(loc)
         delegate?.didMoveTo(x: loc.x, y: loc.y)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         delegate?.didStop()
     }
-    
 }
 
 /*

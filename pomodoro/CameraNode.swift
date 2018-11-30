@@ -30,18 +30,23 @@ class CameraNode: SCNNode {
             }
         }
     }
+    // storing eulerAngles so to come back to original position later
+    var storedDirection: Direction?
+    var originalRotation = SCNVector4(0, 0, 0, 0)
     
     init(node: SCNNode) {
         coreNode = node
         super.init()
         addChildNode(coreNode)
         setup()
+        originalRotation = self.rotation
     }
     
     func setup() {
         camera = SCNCamera()
-        camera?.zFar = Values.zFar
-        camera?.fStop = Values.fStop
+        camera!.zFar = Values.zFar
+        camera!.fStop = Values.fStop
+        camera!.focalLength = Values.focalLength
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -57,26 +62,66 @@ class CameraNode: SCNNode {
         
         if eulerAngles.y.rounded() == 6 { eulerAngles.y = 0 }
         if eulerAngles.y.rounded() == -3 { eulerAngles.y = Float.pi }
-        updateCameraValues()
+        updateCameraValues(direction: direction)
     }
     
-    func updateCameraValues() {
+    func updateCameraValues(direction: Direction) {
         switch direction {
         case .North:
             Values.xDistance = 0
             Values.zDistance = 13
+            Values.yDistance = 4
         case .East:
             Values.xDistance = -13
             Values.zDistance = 0
+            Values.yDistance = 4
         case .West:
             Values.xDistance = 13
             Values.zDistance = 0
+            Values.yDistance = 4
         case .South:
             Values.xDistance = 0
             Values.zDistance = -13
+            Values.yDistance = 4
         default:
             break
         }
     }
+    
+    func configureForPointing() {
+        storedDirection = direction
+        camera!.vignettingPower = 0.7
+        camera!.vignettingIntensity = 1
+        camera!.saturation = 0.3
+        camera!.fStop = 10
+        camera!.focalLength = 40
+    }
+    
+    func removePointing() {
+        updateCameraValues(direction: storedDirection ?? direction)
+        rotation = originalRotation
+        eulerAngles.y = eulerForDirection(direction: storedDirection ?? direction)
+        camera!.vignettingPower = 0
+        camera!.vignettingIntensity = 0
+        camera!.saturation = 1
+        camera!.fStop = Values.fStop
+        camera!.focalLength = Values.focalLength
+    }
+    
+    func eulerForDirection(direction: Direction) -> Float {
+        switch direction {
+        case .North:
+            return 0
+        case .East:
+            return -Float.pi/2
+        case .West:
+            return Float.pi/2
+        case .South:
+            return Float.pi
+        default:
+            return 0
+        }
+    }
+    
     
 }
