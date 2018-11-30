@@ -89,6 +89,7 @@ class CameraNode: SCNNode {
     }
     
     func configureForPointing() {
+        print("@start Pointing direction: \(direction)")
         updateCameraValues(direction: direction, isPointing: true)
         storedDirection = direction
         camera!.vignettingPower = 0.7
@@ -99,9 +100,12 @@ class CameraNode: SCNNode {
     }
     
     func removePointing() {
+        print("@removing Pointing. restoring direction: \(storedDirection)")
+
         updateCameraValues(direction: storedDirection ?? direction, isPointing: false)
         rotation = originalRotation
         eulerAngles.y = eulerForDirection(direction: storedDirection ?? direction)
+        print("@restored direction \(eulerAngles.y)")
         camera!.vignettingPower = 0
         camera!.vignettingIntensity = 0
         camera!.saturation = 1

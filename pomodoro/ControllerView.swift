@@ -78,7 +78,6 @@ class ControllerView: UIView {
     }
     
     func removeShooterView() {
-        joystick.transform = CGAffineTransform.init(rotationAngle: 0)
         shooterView?.removeFromSuperview()
         shooterView = nil
     }

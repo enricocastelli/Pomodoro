@@ -243,8 +243,10 @@ extension GameViewController: JoyDelegate {
         } else if pomodoro.army == .granade {
             pomodoro.army = .precision
         } else {
+            if pomodoro.isPointing {
                 controller.removeShooterView()
                 cameraNode.removePointing()
+            }
             pomodoro.isPointing = false
             pomodoro.army = .pomodorino
         }
