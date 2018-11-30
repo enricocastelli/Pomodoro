@@ -132,6 +132,19 @@ class NodeCreator {
         return bulletNode
     }
     
+    static func createPrecisionBullet(position: SCNVector3) -> SCNNode {
+        let geo = SCNSphere(radius: 0.2)
+        geo.materials.first?.diffuse.contents = UIColor.blue
+        let bulletNode = SCNNode(geometry: geo)
+        bulletNode.position = SCNVector3(position.x, 1, position.z)
+        bulletNode.physicsBody = SCNPhysicsBody.dynamic()
+        bulletNode.physicsBody?.contactTestBitMask = Collider.bulletOpp | Collider.opponent | Collider.impediment
+        bulletNode.physicsBody?.categoryBitMask = Collider.bullet
+        bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
+        bulletNode.name = "bullet"
+        return bulletNode
+    }
+    
     static func createOppBullet(position: SCNVector3, color: UIColor) -> SCNNode {
         let geo = SCNSphere(radius: 0.4)
         geo.materials.first?.diffuse.contents = color

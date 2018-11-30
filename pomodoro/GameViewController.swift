@@ -154,6 +154,16 @@ class GameViewController: UIViewController {
             bulletNode.removeFromParentNode()
         }
     }
+    
+    func shootPrecision() {
+        let bulletNode = NodeCreator.createPrecisionBullet(position: pomodoro.position)
+        scene.rootNode.addChildNode(bulletNode)
+        bulletNode.physicsBody?.applyForce(SCNVector3(angle.x, 0, angle.y), asImpulse: true)
+        let action = SCNAction.wait(duration: 1)
+        bulletNode.runAction(action) {
+            bulletNode.removeFromParentNode()
+        }
+    }
 }
 
 extension GameViewController : SCNSceneRendererDelegate {
@@ -172,7 +182,7 @@ extension GameViewController : SCNSceneRendererDelegate {
         pomodoro.rotation = rotation
         }
         if pomodoro.isPointing {
-            cameraNode.rotation = rotation
+            cameraNode.rotation = SCNVector4(0, -1, 0, rotation.w + Float.pi)
         }
         DispatchQueue.main.async {
             self.lifeProgress.progress = Float(self.pomodoro.life)
@@ -229,9 +239,13 @@ extension GameViewController: JoyDelegate {
         case .granade:
             pomodoro.prepareGranade()
         case .precision:
-            pomodoro.isPointing = true
-            Values.yDistance = 2
-            Values.zDistance = 0
+            if !pomodoro.isPointing {
+                pomodoro.isPointing = true
+                Values.yDistance = 2
+                Values.zDistance = 0
+            } else {
+                shootPrecision()
+            }
         default:
             break
         }
