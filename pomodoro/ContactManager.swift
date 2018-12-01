@@ -29,7 +29,7 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
                 fruit.die()
             }
         } else if other.physicsBody?.categoryBitMask == Collider.impediment {
-            bullet.removeFromParentNode()
+
         } else if other.physicsBody?.categoryBitMask == Collider.player {
             if let pomodoro = other as? Pomodoro {
                 pomodoro.life -= 0.2

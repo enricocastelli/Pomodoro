@@ -94,7 +94,7 @@ class GameViewController: UIViewController {
         if z { impediment.eulerAngles = SCNVector3(0, CGFloat.pi/2, 0) }
         impediment.physicsBody = SCNPhysicsBody.static()
         impediment.physicsBody?.categoryBitMask = Collider.impediment
-        impediment.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.player
+        impediment.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.bulletOpp | Collider.player
         scene.rootNode.addChildNode(impediment)
     }
 
@@ -266,10 +266,10 @@ extension GameViewController: FruitDelegate {
         fruit.movingTo(pos: pomodoro.position.x)
         
         let bulletNode = NodeCreator.createOppBullet(position: fruit.presentation.position, color: fruit.color)
-        guard let shootForce = Calculator.calculateShoot(angle: CGPoint(x: CGFloat(pomodoro.position.x - bulletNode.position.x), y: CGFloat(pomodoro.position.z - bulletNode.position.z))) else { return }
+        let shootForce = CGPoint(x: CGFloat(pomodoro.position.x - bulletNode.position.x), y: CGFloat(pomodoro.position.z - bulletNode.position.z))
 
         scene.rootNode.addChildNode(bulletNode)
-        bulletNode.physicsBody?.applyForce(SCNVector3(shootForce.x * 2, 0, shootForce.y * 2), asImpulse: true)
+        bulletNode.physicsBody?.applyForce(SCNVector3(shootForce.x/1.2, 0, shootForce.y/1.2), asImpulse: true)
     }
 }
 
