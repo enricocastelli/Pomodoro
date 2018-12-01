@@ -113,6 +113,7 @@ class NodeCreator {
         bulletNode.position = SCNVector3(position.x, 1, position.z)
         bulletNode.physicsBody = SCNPhysicsBody.dynamic()
         bulletNode.physicsBody?.contactTestBitMask = Collider.bulletOpp | Collider.opponent | Collider.impediment
+        bulletNode.physicsBody?.isAffectedByGravity = false
         bulletNode.physicsBody?.categoryBitMask = Collider.bullet
         bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
         bulletNode.name = "bullet"
@@ -150,11 +151,12 @@ class NodeCreator {
         let geo = SCNSphere(radius: 0.4)
         geo.materials.first?.diffuse.contents = color
         let bulletNode = SCNNode(geometry: geo)
-        bulletNode.position = position
+        bulletNode.position = SCNVector3(position.x, 1, position.z)
         bulletNode.physicsBody = SCNPhysicsBody.dynamic()
         bulletNode.physicsBody?.contactTestBitMask = Collider.player | Collider.bullet | Collider.impediment
         bulletNode.physicsBody?.categoryBitMask = Collider.bulletOpp
         bulletNode.physicsBody?.collisionBitMask = Collider.bullet | Collider.player | Collider.impediment
+        bulletNode.physicsBody?.isAffectedByGravity = false
         bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
         bulletNode.name = "bullet"
         return bulletNode

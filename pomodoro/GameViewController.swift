@@ -28,6 +28,9 @@ class GameViewController: UIViewController {
         HideSpotEvent(position: SCNVector3(0, 1, -76), z: true),
         FruitEvent(position: SCNVector3(36, 1, -80), fruit: .Pear),
         FruitEvent(position: SCNVector3(36, 1, -74), fruit: .Pear),
+        FruitEvent(position: SCNVector3(87, 1, -100), fruit: .Pear),
+        FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear),
+        FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Apple)
     ]
 
 
@@ -195,7 +198,7 @@ extension GameViewController: JoyDelegate {
             direction = Calculator.calculateDirection(x: x, y: y)
         }
         rotation = Calculator.calculateTurn(x: x, y: y, rotationW: CGFloat(pomodoro.rotation.w))
-        angle = Calculator.calculateAngle(loc: CGPoint(x: x, y: y))
+        angle = Calculator.calculateAngle(loc: CGPoint(x: x, y: y), radius: 50, center: CGPoint(x: 50, y: 50))
     }
     
     func didStop() {
@@ -266,12 +269,18 @@ extension GameViewController: FruitDelegate {
             return }
         guard fruit.position.z + 40 > pomodoro.position.z else { return }
         fruit.movingTo(pos: pomodoro.position.x)
+
+        let targetPosition = CGPoint(x: CGFloat(pomodoro.position.x), y: CGFloat(pomodoro.position.z))
+
+        let shootForce = Calculator.calculateAngle(loc: targetPosition, radius: 13, center: CGPoint(x: CGFloat(fruit.position.x), y: CGFloat(fruit.position.z)))
         
         let bulletNode = NodeCreator.createOppBullet(position: fruit.presentation.position, color: fruit.color)
-        let shootForce = CGPoint(x: CGFloat(pomodoro.position.x - bulletNode.position.x), y: CGFloat(pomodoro.position.z - bulletNode.position.z))
-
         scene.rootNode.addChildNode(bulletNode)
-        bulletNode.physicsBody?.applyForce(SCNVector3(shootForce.x/1.2, 0, shootForce.y/1.2), asImpulse: true)
+        bulletNode.physicsBody?.applyForce(SCNVector3(shootForce.x, 0, shootForce.y), asImpulse: true)
+        let action = SCNAction.wait(duration: 0.8)
+        bulletNode.runAction(action) {
+            bulletNode.removeFromParentNode()
+        }
     }
 }
 
