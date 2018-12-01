@@ -77,8 +77,10 @@ class GameViewController: UIViewController {
     }
     
     func rotateCamera(positive: Bool) {
-        cameraNode.rotate(positive: positive)
-        controller.rotateJoystick(angle: cameraNode.eulerAngles.y)
+        if cameraNode.canRotate {
+            cameraNode.rotate(positive: positive)
+            controller.rotateJoystick(angle: cameraNode.eulerAngles.y)
+        }
     }
     
     func addBoundaries() {

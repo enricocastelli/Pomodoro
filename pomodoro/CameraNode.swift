@@ -33,6 +33,7 @@ class CameraNode: SCNNode {
     // storing eulerAngles so to come back to original position later
     var storedDirection: Direction?
     var originalRotation = SCNVector4(0, 0, 0, 0)
+    var canRotate = true
     
     init(node: SCNNode) {
         coreNode = node
@@ -54,6 +55,7 @@ class CameraNode: SCNNode {
     }
     
     func rotate(positive: Bool) {
+        guard canRotate else { return }
         if positive {
             eulerAngles.y = eulerAngles.y - Float.pi/2
         } else {
@@ -89,6 +91,7 @@ class CameraNode: SCNNode {
     }
     
     func configureForPointing() {
+        canRotate = false
         print("@start Pointing direction: \(direction)")
         updateCameraValues(direction: direction, isPointing: true)
         storedDirection = direction
@@ -101,7 +104,7 @@ class CameraNode: SCNNode {
     
     func removePointing() {
         print("@removing Pointing. restoring direction: \(storedDirection)")
-
+        canRotate = true
         updateCameraValues(direction: storedDirection ?? direction, isPointing: false)
         rotation = originalRotation
         eulerAngles.y = eulerForDirection(direction: storedDirection ?? direction)
