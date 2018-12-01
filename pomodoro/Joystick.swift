@@ -32,8 +32,12 @@ class Joystick: UIView {
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        let loc = touch.location(in: self)
+        var loc = touch.location(in: self)
         pointer.center = Calculator.calculatePointerCenter(loc: loc)
+        if loc.y < 0 { loc.y = 0 }
+        else if loc.y > 100 { loc.y = 100 }
+        if loc.x < 0 { loc.x = 0 }
+        else if loc.x > 100 { loc.x = 100 }
         delegate?.didMoveTo(x: loc.x, y: loc.y)
     }
     
