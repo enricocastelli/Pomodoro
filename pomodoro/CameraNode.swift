@@ -70,19 +70,19 @@ class CameraNode: SCNNode {
         case .North:
             Values.xDistance = isPointing ? 0 : 0
             Values.zDistance = isPointing ? 0 : 13
-            Values.yDistance = isPointing ? 2 : 4
+            Values.yDistance = isPointing ? 1.5 : 4
         case .East:
             Values.xDistance = isPointing ? 0 : -13
             Values.zDistance = isPointing ? 0 : 0
-            Values.yDistance = isPointing ? 2 : 4
+            Values.yDistance = isPointing ? 1.5 : 4
         case .West:
             Values.xDistance = isPointing ? 0 : 13
             Values.zDistance = isPointing ? 0 : 0
-            Values.yDistance = isPointing ? 2 : 4
+            Values.yDistance = isPointing ? 1.5 : 4
         case .South:
             Values.xDistance = isPointing ? 0 : 0
             Values.zDistance = isPointing ? 0 : -13
-            Values.yDistance = isPointing ? 2 : 4
+            Values.yDistance = isPointing ? 1.5 : 4
         default:
             break
         }

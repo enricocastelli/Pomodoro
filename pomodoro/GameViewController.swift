@@ -107,7 +107,7 @@ class GameViewController: UIViewController {
         let bulletNode = NodeCreator.createBullet(position: pomodoro.position)
         scene.rootNode.addChildNode(bulletNode)
         bulletNode.physicsBody?.applyForce(SCNVector3(angle.x/4, 0, angle.y/4), asImpulse: true)
-        let action = SCNAction.wait(duration: 1)
+        let action = SCNAction.wait(duration: 0.8)
         bulletNode.runAction(action) {
             bulletNode.removeFromParentNode()
         }
@@ -132,7 +132,7 @@ class GameViewController: UIViewController {
         let bulletNode = NodeCreator.createPrecisionBullet(position: pomodoro.position)
         scene.rootNode.addChildNode(bulletNode)
         bulletNode.physicsBody?.applyForce(SCNVector3(angle.x, 0, angle.y), asImpulse: true)
-        let action = SCNAction.wait(duration: 1)
+        let action = SCNAction.wait(duration: 0.8)
         bulletNode.runAction(action) {
             bulletNode.removeFromParentNode()
         }
