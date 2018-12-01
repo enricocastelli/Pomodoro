@@ -23,7 +23,11 @@ class Pomodoro : SCNNode {
     var isTrowing = false
     var isPointing = false
     
-    var trowingForce : CGFloat = 0.0
+    var trowingForce : CGFloat = 0.0 {
+        didSet {
+            updateArrow()
+        }
+    }
     var trowingLength : CGFloat = 0.0
     
     var granade: SCNNode?
@@ -82,6 +86,11 @@ class Pomodoro : SCNNode {
         trowingArrow?.opacity = 0.5
         trowingArrow?.position = SCNVector3(coreNode.position.x, 0, coreNode.position.z + 1)
         addChildNode(trowingArrow!)
+    }
+    
+    func updateArrow() {
+        guard let trowingArrow = trowingArrow else { return }
+        trowingArrow.scale = SCNVector3(1, 1 + (trowingForce/7), 1)
     }
     
     func shootGranade() {

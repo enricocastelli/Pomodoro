@@ -67,4 +67,23 @@ class Calculator {
         return CGPoint(x: speedX, y: speedY)
     }
     
+    static func calculatePointerCenter(loc: CGPoint) -> CGPoint {
+        let radius: CGFloat = 50
+        let distance = hypot(loc.x - 50, loc.y - 50)
+        guard distance != 0 else { return CGPoint(x: 0, y: 0) }
+        let point = CGPoint(
+            x: 50 + (loc.x - 50) / distance * radius,
+            y: 50 + (loc.y - 50) / distance * radius)
+        return point
+    }
+    
+    static func calculateAngle(loc: CGPoint) -> CGPoint {
+        let radius: CGFloat = 50
+        let distance = hypot(loc.x - 50, loc.y - 50)
+        guard distance != 0 else { return CGPoint(x: 0, y: 0) }
+        let point = CGPoint(
+            x: 50 + (loc.x - 50) / distance * radius,
+            y: 50 + (loc.y - 50) / distance * radius)
+        return CGPoint(x: point.x - 50, y: point.y - 50)
+    }
 }

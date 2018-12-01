@@ -104,10 +104,9 @@ class GameViewController: UIViewController {
     }
     
     func shoot() {
-        guard let shootForce = Calculator.calculateShoot(angle: angle) else { return }
         let bulletNode = NodeCreator.createBullet(position: pomodoro.position)
         scene.rootNode.addChildNode(bulletNode)
-        bulletNode.physicsBody?.applyForce(SCNVector3(shootForce.x, 0, shootForce.y), asImpulse: true)
+        bulletNode.physicsBody?.applyForce(SCNVector3(angle.x/4, 0, angle.y/4), asImpulse: true)
         let action = SCNAction.wait(duration: 1)
         bulletNode.runAction(action) {
             bulletNode.removeFromParentNode()
@@ -115,10 +114,11 @@ class GameViewController: UIViewController {
     }
     
     func shootGranade() {
-        let shootForce = Calculator.calculateGranadeShoot(angle: angle)
         let bulletNode = NodeCreator.createGranade(position: pomodoro.position)
         scene.rootNode.addChildNode(bulletNode)
-        bulletNode.physicsBody?.applyForce(SCNVector3(shootForce.x, pomodoro.trowingForce, shootForce.y), asImpulse: true)
+        let force = pomodoro.trowingForce/2
+        let hForce = force/5
+        bulletNode.physicsBody?.applyForce(SCNVector3((angle.x/10)*hForce, force, (angle.y/10)*hForce), asImpulse: true)
         let action = SCNAction.wait(duration: 4)
         bulletNode.runAction(action) {
             if let explode = SCNParticleSystem(named: "explode", inDirectory: "art.scnassets/anims") {
@@ -193,7 +193,7 @@ extension GameViewController: JoyDelegate {
             direction = Calculator.calculateDirection(x: x, y: y)
         }
         rotation = Calculator.calculateTurn(x: x, y: y, rotationW: CGFloat(pomodoro.rotation.w))
-        angle = CGPoint(x: x - 50, y: y - 50)
+        angle = Calculator.calculateAngle(loc: CGPoint(x: x, y: y))
     }
     
     func didStop() {
@@ -207,9 +207,10 @@ extension GameViewController: JoyDelegate {
             pomodoro.shoot()
             shoot()
         case .granade:
-            pomodoro.prepareGranade()
+            break
         case .precision:
             if !pomodoro.isPointing {
+                didStop()
                 pomodoro.isPointing = true
                 cameraNode.configureForPointing()
                 controller.insertShooterView()
@@ -223,6 +224,7 @@ extension GameViewController: JoyDelegate {
     
     func didPressForce(force: CGFloat) {
         guard pomodoro.army == .granade else { return }
+        pomodoro.prepareGranade()
         didStop()
         pomodoro.isTrowing = true
         pomodoro.trowingForce = force*2
