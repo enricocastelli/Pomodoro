@@ -107,7 +107,7 @@ class NodeCreator {
     }
     
     static func createOrange() -> Orange {
-        let geo = SCNSphere(radius: 1)
+        let geo = SCNSphere(radius: 1.3)
         geo.materials.first?.diffuse.contents = UIColor.orange
         let box = SCNNode(geometry: geo)
         let node = Orange(node: box)
@@ -161,7 +161,7 @@ class NodeCreator {
             Collider.opponent | Collider.impediment  :
             Collider.bulletOpp | Collider.player | Collider.impediment
         bulletNode.physicsBody?.isAffectedByGravity = true
-        bulletNode.physicsBody?.categoryBitMask = (opponent == nil) ? Collider.bullet : Collider.bulletOpp
+        bulletNode.physicsBody?.categoryBitMask = (opponent == nil) ? Collider.granade : Collider.granadeOpp
         bulletNode.physicsBody?.collisionBitMask = (opponent == nil) ?
             Collider.bulletOpp | Collider.opponent | Collider.impediment | Collider.bullet | Collider.floor :
             Collider.bulletOpp | Collider.player | Collider.impediment | Collider.bullet | Collider.floor
@@ -181,7 +181,7 @@ class NodeCreator {
             Collider.opponent | Collider.impediment  :
             Collider.bulletOpp | Collider.player | Collider.impediment
         bulletNode.physicsBody?.isAffectedByGravity = false
-        bulletNode.physicsBody?.categoryBitMask = (opponent == nil) ? Collider.bullet : Collider.bulletOpp
+        bulletNode.physicsBody?.categoryBitMask = (opponent == nil) ? Collider.precision : Collider.precisionOpp
         bulletNode.physicsBody?.collisionBitMask = (opponent == nil) ?
             Collider.bulletOpp | Collider.opponent | Collider.impediment | Collider.bullet :
             Collider.bulletOpp | Collider.player | Collider.impediment | Collider.bullet

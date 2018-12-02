@@ -21,9 +21,11 @@ class Event: NSObject {
 
 class FruitEvent: Event {
     var fruit: FruitType
+    var sleeping: Bool
     
-    init(position: SCNVector3, fruit: FruitType) {
+    init(position: SCNVector3, fruit: FruitType, sleeping: Bool) {
         self.fruit = fruit
+        self.sleeping = sleeping
         super.init(position: position)
     }
 }

@@ -23,15 +23,15 @@ class GameViewController: UIViewController {
     var angle = CGPoint(x: 0, y: 0)
         
     var events : [Event] = [
-        FruitEvent(position: SCNVector3(0, 1, -30), fruit: .Apple),
-        FruitEvent(position: SCNVector3(-6, 1, -70), fruit: .Pear),
+        FruitEvent(position: SCNVector3(0, 1, -30), fruit: .Apple, sleeping: false),
+        FruitEvent(position: SCNVector3(-6, 1, -70), fruit: .Pear, sleeping: false),
         HideSpotEvent(position: SCNVector3(0, 1, -76), z: true),
-        FruitEvent(position: SCNVector3(36, 1, -80), fruit: .Pear),
-        FruitEvent(position: SCNVector3(36, 1, -74), fruit: .Pear),
-        FruitEvent(position: SCNVector3(87, 1, -100), fruit: .Pear),
-        FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear),
-        FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange),
-        HideSpotEvent(position: SCNVector3(91, 1, -94), z: false),
+        FruitEvent(position: SCNVector3(36, 1, -80), fruit: .Pear, sleeping: false),
+        FruitEvent(position: SCNVector3(36, 1, -74), fruit: .Pear, sleeping: false),
+        FruitEvent(position: SCNVector3(87, 1, -100), fruit: .Pear, sleeping: true),
+        FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear, sleeping: true),
+        FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange, sleeping: true),
+        HideSpotEvent(position: SCNVector3(80, 1, -88.5), z: false),
     ]
 
 
@@ -70,18 +70,21 @@ class GameViewController: UIViewController {
             addImp(pos: SCNVector3(event.position.x, 1, event.position.z + 5), z: false)
             scene.rootNode.addChildNode(apple)
             apple.delegate = self
+            apple.isSleeping = event.sleeping
             apple.activate()
         case .Pear:
             let pear = NodeCreator.createPear()
             pear.position = event.position
             scene.rootNode.addChildNode(pear)
             pear.delegate = self
+            pear.isSleeping = event.sleeping
             pear.activate()
         case .Orange:
             let orange = NodeCreator.createOrange()
             orange.position = event.position
             scene.rootNode.addChildNode(orange)
             orange.delegate = self
+            orange.isSleeping = event.sleeping
             orange.activate()
         }
     }
@@ -100,7 +103,7 @@ class GameViewController: UIViewController {
     }
     
     func addImp(pos: SCNVector3, z: Bool) {
-        let geo = SCNBox(width: 5, height: 3, length: 1, chamferRadius: 0)
+        let geo = SCNBox(width: 5, height: 2, length: 1, chamferRadius: 0)
         let impediment = SCNNode(geometry: geo)
         impediment.position = pos
         if z { impediment.eulerAngles = SCNVector3(0, CGFloat.pi/2, 0) }

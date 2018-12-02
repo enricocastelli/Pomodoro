@@ -32,6 +32,7 @@ class Fruit: SCNNode {
     var army = Army.pomodorino
     var damageInflicting: Float = 1
     var life: Float = 1
+    var isSleeping = false
     
     init(node: SCNNode) {
         coreNode = node
@@ -59,7 +60,8 @@ class Fruit: SCNNode {
     
     func hit(damage: Float) {
         life = life - damage
-        if life < 0 {
+        isSleeping = false
+        if life <= 0 {
             deactivate()
             die()
         }
@@ -86,7 +88,9 @@ class Fruit: SCNNode {
     }
     
     @objc func trigger() {
-        delegate?.shouldShoot(fruit: self)
+        if !isSleeping {
+            delegate?.shouldShoot(fruit: self)
+        }
     }
 }
 
@@ -120,8 +124,8 @@ class Orange: Fruit {
     override func setup() {
         color = UIColor.orange
         impediment = false
-        isMoving = true
-        timerTime =  0.7
+        isMoving = false
+        timerTime =  2
         army = .granade
         damageInflicting = 1.5
         life = 1.5
