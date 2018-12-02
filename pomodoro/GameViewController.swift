@@ -31,7 +31,7 @@ class GameViewController: UIViewController {
         FruitEvent(position: SCNVector3(87, 1, -100), fruit: .Pear, sleeping: true),
         FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear, sleeping: true),
         FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange, sleeping: true),
-        HideSpotEvent(position: SCNVector3(80, 0, -88.5), z: false),
+        HideSpotEvent(position: SCNVector3(80, 0, -89), z: false),
         FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true),
     ]
 
@@ -111,7 +111,7 @@ class GameViewController: UIViewController {
     }
     
     func addImp(pos: SCNVector3, z: Bool) {
-        let geo = SCNBox(width: 5, height: 3, length: 2, chamferRadius: 0.2)
+        let geo = SCNBox(width: 5, height: 3, length: 2, chamferRadius: 0.1)
         let impediment = SCNNode(geometry: geo)
         impediment.position = pos
         if z { impediment.eulerAngles = SCNVector3(0, CGFloat.pi/2, 0) }
