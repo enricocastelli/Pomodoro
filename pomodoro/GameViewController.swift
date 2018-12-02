@@ -32,6 +32,7 @@ class GameViewController: UIViewController {
         FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear, sleeping: true),
         FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange, sleeping: true),
         HideSpotEvent(position: SCNVector3(80, 1, -88.5), z: false),
+        FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true),
     ]
 
 
@@ -48,7 +49,7 @@ class GameViewController: UIViewController {
         scnView.scene = scene
         scnView.allowsCameraControl = false
         scnView.delegate = self
-        pomodoro = NodeCreator.createPomodoro()
+        pomodoro = NodeCreator.createPomodoro(delegate: self)
         scene.rootNode.addChildNode(pomodoro)
         addControllers()
         addBoundaries()
@@ -86,6 +87,13 @@ class GameViewController: UIViewController {
             orange.delegate = self
             orange.isSleeping = event.sleeping
             orange.activate()
+        case .Plum:
+            let plum = NodeCreator.createPlum()
+            plum.position = event.position
+            scene.rootNode.addChildNode(plum)
+            plum.delegate = self
+            plum.isSleeping = event.sleeping
+            plum.activate()
         }
     }
     
@@ -173,6 +181,7 @@ extension GameViewController : SCNSceneRendererDelegate {
             cameraNode.rotation = SCNVector4(0, -1, 0, rotation.w + Float.pi)
         }
         checkOpp()
+
     }
     
     func checkTest() -> Bool {
@@ -269,6 +278,22 @@ extension GameViewController: JoyDelegate {
         }
         controller.didChangeArmy(army: pomodoro.army)
     }
+}
+
+extension GameViewController: PomoDelegate {
+    
+    func isHit() {
+        DispatchQueue.main.async {
+            self.controller.lifeProgress.progress = self.pomodoro.life/20
+        }
+    }
+    
+    func isOver() {
+        DispatchQueue.main.async {
+           self.controller.gameOver()
+        }
+    }
+    
 }
 
 extension GameViewController: FruitDelegate {

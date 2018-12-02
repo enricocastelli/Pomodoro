@@ -18,6 +18,7 @@ enum FruitType {
     case Apple
     case Pear
     case Orange
+    case Plum
 }
 
 class Fruit: SCNNode {
@@ -100,7 +101,7 @@ class Apple: Fruit {
             color = UIColor.green
             impediment = true
             isMoving = true
-            timerTime =  1.1
+            timerTime =  2
             damageInflicting = 0.8
     }
 
@@ -113,7 +114,7 @@ class Pear: Fruit {
         color = UIColor.yellow
         impediment = false
         isMoving = false
-        timerTime =  0.8
+        timerTime =  1.5
         life = 1.5
     }
 
@@ -138,7 +139,7 @@ class Plum: Fruit {
         color = UIColor.purple
         impediment = false
         isMoving = false
-        timerTime =  0.5
+        timerTime =  1
         army = .pomodorino
         damageInflicting = 1.5
         life = 3

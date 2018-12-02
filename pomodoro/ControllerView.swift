@@ -43,6 +43,7 @@ class ControllerView: UIView {
         addSubview(armyButton)
         lifeProgress = UIProgressView(frame: CGRect(x: 20, y: 16, width: 200, height: 20))
         addSubview(lifeProgress)
+        lifeProgress.progress = 1
     }
     
     func addGesture() {
@@ -91,6 +92,12 @@ class ControllerView: UIView {
         circle.layer.cornerRadius = frame.height/2
         circle.center = center
         return circle
+    }
+    
+    func gameOver() {
+        let view = UIView(frame: self.frame)
+        view.backgroundColor = UIColor.red
+        self.addSubview(view)
     }
     
 }

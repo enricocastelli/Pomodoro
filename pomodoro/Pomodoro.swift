@@ -10,14 +10,20 @@ import Foundation
 import UIKit
 import SceneKit
 
+protocol PomoDelegate {
+    func isHit()
+    func isOver()
+}
+
 class Pomodoro : SCNNode {
     
     var coreNode: SCNNode
+    var delegate: GameViewController
     var actionTimer = Timer()
     
     var shouldBreath = true
     var shouldMove = false
-    var life: Float = 1.0
+    var life: Float = 20.0
     var army = Army.pomodorino
     
     var isTrowing = false
@@ -34,8 +40,9 @@ class Pomodoro : SCNNode {
     var trowingArrow: SCNNode?
 
     
-    init(node: SCNNode) {
-        coreNode = node
+    init(node: SCNNode, delegate: GameViewController) {
+        self.coreNode = node
+        self.delegate = delegate
         super.init()
         addChildNode(coreNode)
         start()
@@ -69,6 +76,19 @@ class Pomodoro : SCNNode {
             rightEye.scale.y = 1
             leftEye.scale.y = 1
         })
+    }
+    
+    func hit(damage: Float) {
+        delegate.isHit()
+        print("hit by \(damage), life: \(life)")
+        life = life - damage
+        if life <= 0 {
+            die()
+        }
+    }
+    
+    func die() {
+        delegate.isOver()
     }
     
     func prepareGranade() {
