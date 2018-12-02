@@ -87,6 +87,7 @@ class NodeCreator {
         let node = Pear(node: box)
         node.physicsBody = SCNPhysicsBody.dynamic()
         node.name = "opponent"
+        node.physicsBody?.mass = 300
         node.physicsBody?.contactTestBitMask = Collider.bullet | Collider.opponent
         node.physicsBody?.categoryBitMask = Collider.opponent
         node.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.impediment
@@ -100,6 +101,7 @@ class NodeCreator {
         let node = Apple(node: box)
         node.physicsBody = SCNPhysicsBody.dynamic()
         node.name = "opponent"
+        node.physicsBody?.mass = 300
         node.physicsBody?.contactTestBitMask = Collider.bullet | Collider.opponent
         node.physicsBody?.categoryBitMask = Collider.opponent
         node.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.impediment
@@ -113,6 +115,7 @@ class NodeCreator {
         let node = Orange(node: box)
         node.physicsBody = SCNPhysicsBody.dynamic()
         node.name = "opponent"
+        node.physicsBody?.mass = 400
         node.physicsBody?.contactTestBitMask = Collider.bullet | Collider.opponent
         node.physicsBody?.categoryBitMask = Collider.opponent
         node.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.impediment
@@ -126,6 +129,7 @@ class NodeCreator {
         let node = Plum(node: box)
         node.physicsBody = SCNPhysicsBody.dynamic()
         node.name = "opponent"
+        node.physicsBody?.mass = 600
         node.physicsBody?.contactTestBitMask = Collider.bullet | Collider.opponent
         node.physicsBody?.categoryBitMask = Collider.opponent
         node.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.impediment

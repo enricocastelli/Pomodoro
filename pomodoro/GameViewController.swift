@@ -25,13 +25,13 @@ class GameViewController: UIViewController {
     var events : [Event] = [
         FruitEvent(position: SCNVector3(0, 1, -30), fruit: .Apple, sleeping: false),
         FruitEvent(position: SCNVector3(-6, 1, -70), fruit: .Pear, sleeping: false),
-        HideSpotEvent(position: SCNVector3(0, 1, -76), z: true),
+        HideSpotEvent(position: SCNVector3(0, 0, -76), z: true),
         FruitEvent(position: SCNVector3(36, 1, -80), fruit: .Pear, sleeping: false),
         FruitEvent(position: SCNVector3(36, 1, -74), fruit: .Pear, sleeping: false),
         FruitEvent(position: SCNVector3(87, 1, -100), fruit: .Pear, sleeping: true),
         FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear, sleeping: true),
         FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange, sleeping: true),
-        HideSpotEvent(position: SCNVector3(80, 1, -88.5), z: false),
+        HideSpotEvent(position: SCNVector3(80, 0, -88.5), z: false),
         FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true),
     ]
 
@@ -68,7 +68,7 @@ class GameViewController: UIViewController {
         case .Apple:
             let apple = NodeCreator.createApple()
             apple.position = event.position
-            addImp(pos: SCNVector3(event.position.x, 1, event.position.z + 5), z: false)
+            addImp(pos: SCNVector3(event.position.x, 0, event.position.z + 5), z: false)
             scene.rootNode.addChildNode(apple)
             apple.delegate = self
             apple.isSleeping = event.sleeping
@@ -111,7 +111,7 @@ class GameViewController: UIViewController {
     }
     
     func addImp(pos: SCNVector3, z: Bool) {
-        let geo = SCNBox(width: 5, height: 2, length: 1, chamferRadius: 0)
+        let geo = SCNBox(width: 5, height: 3, length: 2, chamferRadius: 0.2)
         let impediment = SCNNode(geometry: geo)
         impediment.position = pos
         if z { impediment.eulerAngles = SCNVector3(0, CGFloat.pi/2, 0) }
@@ -142,11 +142,14 @@ class GameViewController: UIViewController {
         let force = pomodoro.trowingForce/2
         let hForce = force/5
         bulletNode.physicsBody?.applyForce(SCNVector3((angle.x/10)*hForce, force, (angle.y/10)*hForce), asImpulse: true)
-        let action = SCNAction.wait(duration: 4)
+        let action = SCNAction.wait(duration: 3.5)
         bulletNode.runAction(action) {
             if let explode = SCNParticleSystem(named: "explode", inDirectory: "art.scnassets/anims") {
                 bulletNode.addParticleSystem(explode)
             }
+        }
+        let action2 = SCNAction.wait(duration: 3.6)
+        bulletNode.runAction(action2) {
             bulletNode.removeFromParentNode()
         }
     }

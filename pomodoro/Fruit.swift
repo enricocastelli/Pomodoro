@@ -142,6 +142,6 @@ class Plum: Fruit {
         timerTime =  1
         army = .pomodorino
         damageInflicting = 1.5
-        life = 3
+        life = 30
     }
 }
