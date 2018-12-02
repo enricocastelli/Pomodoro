@@ -86,6 +86,7 @@ class CameraNode: SCNNode {
             Values.zDistance = isPointing ? 0 : -13
             Values.yDistance = isPointing ? 1.5 : 4
         default:
+            print("ERROR DIRECTION NOT FOUND!")
             break
         }
     }

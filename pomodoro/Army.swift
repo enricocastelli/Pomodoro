@@ -13,4 +13,17 @@ enum Army {
     case granade
     case sugo
     case precision
+    
+    func duration() -> Double {
+        switch self {
+        case .pomodorino:
+            return 0.8
+        case .granade:
+            return 3.5
+        case .precision:
+            return 0.4
+        case .sugo:
+            return 1
+        }
+    }
 }

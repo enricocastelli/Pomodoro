@@ -21,19 +21,6 @@ class GameViewController: UIViewController {
     var direction = SCNVector3(0, 0, 0)
     var rotation = SCNVector4(0, 0, 0, 0)
     var angle = CGPoint(x: 0, y: 0)
-        
-    var events : [Event] = [
-        FruitEvent(position: SCNVector3(0, 1, -30), fruit: .Apple, sleeping: false),
-        FruitEvent(position: SCNVector3(-6, 1, -70), fruit: .Pear, sleeping: false),
-        HideSpotEvent(position: SCNVector3(0, 0, -76), z: true),
-        FruitEvent(position: SCNVector3(36, 1, -80), fruit: .Pear, sleeping: false),
-        FruitEvent(position: SCNVector3(36, 1, -74), fruit: .Pear, sleeping: false),
-        FruitEvent(position: SCNVector3(87, 1, -100), fruit: .Pear, sleeping: true),
-        FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear, sleeping: true),
-        FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange, sleeping: true),
-        HideSpotEvent(position: SCNVector3(80, 0, -89), z: false),
-        FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true),
-    ]
 
 
     override func viewDidLoad() {
@@ -130,7 +117,7 @@ class GameViewController: UIViewController {
         let bulletNode = NodeCreator.createBullet(position: pomodoro.position, opponent: nil)
         scene.rootNode.addChildNode(bulletNode)
         bulletNode.physicsBody?.applyForce(SCNVector3(angle.x/4, 0, angle.y/4), asImpulse: true)
-        let action = SCNAction.wait(duration: 0.8)
+        let action = SCNAction.wait(duration: Army.pomodorino.duration())
         bulletNode.runAction(action) {
             bulletNode.removeFromParentNode()
         }
@@ -142,13 +129,13 @@ class GameViewController: UIViewController {
         let force = pomodoro.trowingForce/2
         let hForce = force/5
         bulletNode.physicsBody?.applyForce(SCNVector3((angle.x/10)*hForce, force, (angle.y/10)*hForce), asImpulse: true)
-        let action = SCNAction.wait(duration: 3.5)
+        let action = SCNAction.wait(duration: Army.granade.duration())
         bulletNode.runAction(action) {
             if let explode = SCNParticleSystem(named: "explode", inDirectory: "art.scnassets/anims") {
                 bulletNode.addParticleSystem(explode)
             }
         }
-        let action2 = SCNAction.wait(duration: 3.6)
+        let action2 = SCNAction.wait(duration: Army.granade.duration() + 0.3)
         bulletNode.runAction(action2) {
             bulletNode.removeFromParentNode()
         }
@@ -158,7 +145,7 @@ class GameViewController: UIViewController {
         let bulletNode = NodeCreator.createPrecisionBullet(position: pomodoro.position, opponent: nil)
         scene.rootNode.addChildNode(bulletNode)
         bulletNode.physicsBody?.applyForce(SCNVector3(angle.x, 0, angle.y), asImpulse: true)
-        let action = SCNAction.wait(duration: 0.8)
+        let action = SCNAction.wait(duration: Army.precision.duration())
         bulletNode.runAction(action) {
             bulletNode.removeFromParentNode()
         }
@@ -176,18 +163,17 @@ extension GameViewController : SCNSceneRendererDelegate {
         let zComponent = cameraPosition.z * (1 - camDamping) + targetPosition.z * camDamping
         cameraPosition = SCNVector3(x: xComponent, y: yComponent, z: zComponent)
         cameraNode.position = cameraPosition
-        if checkTest() {
+        if shouldMove() {
         pomodoro.position = SCNVector3(pomodoro.position.x + direction.x, 0, pomodoro.position.z + direction.z)
         pomodoro.rotation = rotation
         }
         if pomodoro.isPointing {
             cameraNode.rotation = SCNVector4(0, -1, 0, rotation.w + Float.pi)
         }
-        checkOpp()
-
+        eventChecker()
     }
     
-    func checkTest() -> Bool {
+    func shouldMove() -> Bool {
         let newPos = SCNVector3(pomodoro.position.x + direction.x, 0, pomodoro.position.z + direction.z)
         let hittest = scene.rootNode.hitTestWithSegment(from: pomodoro.position, to: newPos, options: nil)
         guard hittest.count > 0 else { return true }
@@ -200,9 +186,9 @@ extension GameViewController : SCNSceneRendererDelegate {
         return true
     }
     
-    func checkOpp() {
-        for index in 0...events.count - 1 {
-            let event = events[index]
+    func eventChecker() {
+        for index in 0...Event.hardEvents.count - 1 {
+            let event = Event.hardEvents[index]
             if abs(pomodoro.position.z) > abs(event.position.z) - Float(Values.zFar) && event.added == false {
                 event.added = true
                 executeEvent(event: event)
@@ -251,9 +237,8 @@ extension GameViewController: JoyDelegate {
     
     func didPressForce(force: CGFloat) {
         guard pomodoro.army == .granade else { return }
-        pomodoro.prepareGranade()
         didStop()
-        pomodoro.isTrowing = true
+        pomodoro.prepareGranade()
         pomodoro.trowingForce = force*2
     }
     
@@ -262,7 +247,6 @@ extension GameViewController: JoyDelegate {
             pomodoro.shootGranade()
             shootGranade()
         }
-        pomodoro.isTrowing = false
         pomodoro.trowingForce = 0
     }
     
@@ -293,6 +277,8 @@ extension GameViewController: PomoDelegate {
     
     func isOver() {
         DispatchQueue.main.async {
+            self.scnView.isPlaying = false
+            self.scene.isPaused = true
            self.controller.gameOver()
         }
     }
@@ -317,7 +303,7 @@ extension GameViewController: FruitDelegate {
         
         let vector = ForceForArmy(army: fruit.army, shootForce: shootForce)
         bulletNode.physicsBody?.applyForce(vector, asImpulse: true)
-        let action = SCNAction.wait(duration: 0.8)
+        let action = SCNAction.wait(duration: fruit.army.duration())
         bulletNode.runAction(action) {
             bulletNode.removeFromParentNode()
         }

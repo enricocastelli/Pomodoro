@@ -93,6 +93,7 @@ class Pomodoro : SCNNode {
     
     func prepareGranade() {
         guard granade == nil && trowingArrow == nil else { return }
+        isTrowing = true
         granade = NodeCreator.createGranade(position: coreNode.position, opponent: nil)
         granade?.physicsBody?.isAffectedByGravity = false
         addTrowingArrow()
@@ -118,6 +119,7 @@ class Pomodoro : SCNNode {
         granade = nil
         trowingArrow?.removeFromParentNode()
         trowingArrow = nil
+        isTrowing = false
     }
     
     func reset() {
