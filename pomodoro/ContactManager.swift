@@ -23,18 +23,39 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
     
     func bulletHandler(bullet: SCNNode, other: SCNNode) {
         if other.physicsBody?.categoryBitMask == Collider.opponent {
-            bullet.removeFromParentNode()
-            if let fruit = other as? Fruit {
-                fruit.deactivate()
-                fruit.die()
+            if let fruit = other as? Fruit, (
+                bullet.physicsBody?.categoryBitMask == Collider.bullet ||
+                bullet.physicsBody?.categoryBitMask == Collider.granade ||
+                bullet.physicsBody?.categoryBitMask == Collider.precision )
+                
+            {
+                fruit.hit(damage: getDamageFromBullet(bullet: bullet))
+                bullet.removeFromParentNode()
             }
         } else if other.physicsBody?.categoryBitMask == Collider.impediment {
 
-        } else if other.physicsBody?.categoryBitMask == Collider.player {
+        } else if other.physicsBody?.categoryBitMask == Collider.player, (
+            bullet.physicsBody?.categoryBitMask == Collider.bulletOpp ||
+                bullet.physicsBody?.categoryBitMask == Collider.granadeOpp ||
+                bullet.physicsBody?.categoryBitMask == Collider.precisionOpp )
+        {
             if let pomodoro = other as? Pomodoro {
-                pomodoro.life -= 0.2
+                pomodoro.life -= getDamageFromBullet(bullet: bullet)
             }
             bullet.removeFromParentNode()
+        }
+    }
+    
+    func getDamageFromBullet(bullet: SCNNode) -> Float {
+        switch bullet.physicsBody?.categoryBitMask {
+        case Collider.bullet:
+            return 1
+        case Collider.granade:
+            return 1.5
+        case Collider.precision:
+            return 1.5
+        default:
+            return 1
         }
     }
     

@@ -106,57 +106,85 @@ class NodeCreator {
         return node
     }
     
-    static func createBullet(position: SCNVector3) -> SCNNode {
-        let geo = SCNSphere(radius: 0.4)
+    static func createOrange() -> Orange {
+        let geo = SCNSphere(radius: 1)
         geo.materials.first?.diffuse.contents = UIColor.orange
+        let box = SCNNode(geometry: geo)
+        let node = Orange(node: box)
+        node.physicsBody = SCNPhysicsBody.dynamic()
+        node.name = "opponent"
+        node.physicsBody?.contactTestBitMask = Collider.bullet | Collider.opponent
+        node.physicsBody?.categoryBitMask = Collider.opponent
+        node.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.impediment
+        return node
+    }
+    
+    static func createPlum() -> Plum {
+        let geo = SCNSphere(radius: 3)
+        geo.materials.first?.diffuse.contents = UIColor.purple
+        let box = SCNNode(geometry: geo)
+        let node = Plum(node: box)
+        node.physicsBody = SCNPhysicsBody.dynamic()
+        node.name = "opponent"
+        node.physicsBody?.contactTestBitMask = Collider.bullet | Collider.opponent
+        node.physicsBody?.categoryBitMask = Collider.opponent
+        node.physicsBody?.collisionBitMask = Collider.floor | Collider.bullet | Collider.impediment
+        return node
+    }
+    
+    static func createBullet(position: SCNVector3, opponent: Fruit?) -> SCNNode {
+        let geo = SCNSphere(radius: 0.4)
+        geo.materials.first?.diffuse.contents = opponent?.color ?? UIColor.orange
         let bulletNode = SCNNode(geometry: geo)
         bulletNode.position = SCNVector3(position.x, 1, position.z)
         bulletNode.physicsBody = SCNPhysicsBody.dynamic()
-        bulletNode.physicsBody?.contactTestBitMask = Collider.bulletOpp | Collider.opponent | Collider.impediment
+        bulletNode.physicsBody?.contactTestBitMask = (opponent == nil) ?
+             Collider.opponent | Collider.impediment  :
+            Collider.bulletOpp | Collider.player | Collider.impediment
         bulletNode.physicsBody?.isAffectedByGravity = false
-        bulletNode.physicsBody?.categoryBitMask = Collider.bullet
+        bulletNode.physicsBody?.categoryBitMask = (opponent == nil) ? Collider.bullet : Collider.bulletOpp
+        bulletNode.physicsBody?.collisionBitMask = (opponent == nil) ?
+            Collider.bulletOpp | Collider.opponent | Collider.impediment | Collider.bullet :
+            Collider.bulletOpp | Collider.player | Collider.impediment | Collider.bullet
         bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
         bulletNode.name = "bullet"
         return bulletNode
     }
     
-    static func createGranade(position: SCNVector3) -> SCNNode {
+    static func createGranade(position: SCNVector3, opponent: Fruit?) -> SCNNode {
         let geo = SCNCapsule(capRadius: 0.3, height: 1)
         geo.materials.first?.diffuse.contents = UIColor.red
         let bulletNode = SCNNode(geometry: geo)
         bulletNode.position = SCNVector3(position.x, 1, position.z)
         bulletNode.physicsBody = SCNPhysicsBody.dynamic()
-        bulletNode.physicsBody?.contactTestBitMask = Collider.bulletOpp | Collider.opponent | Collider.impediment
-        bulletNode.physicsBody?.categoryBitMask = Collider.bullet
+        bulletNode.physicsBody?.contactTestBitMask = (opponent == nil) ?
+            Collider.opponent | Collider.impediment  :
+            Collider.bulletOpp | Collider.player | Collider.impediment
+        bulletNode.physicsBody?.isAffectedByGravity = true
+        bulletNode.physicsBody?.categoryBitMask = (opponent == nil) ? Collider.bullet : Collider.bulletOpp
+        bulletNode.physicsBody?.collisionBitMask = (opponent == nil) ?
+            Collider.bulletOpp | Collider.opponent | Collider.impediment | Collider.bullet | Collider.floor :
+            Collider.bulletOpp | Collider.player | Collider.impediment | Collider.bullet | Collider.floor
         bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
         bulletNode.name = "bullet"
         return bulletNode
     }
     
-    static func createPrecisionBullet(position: SCNVector3) -> SCNNode {
+    static func createPrecisionBullet(position: SCNVector3, opponent: Fruit?) -> SCNNode  {
         let geo = SCNSphere(radius: 0.2)
         geo.materials.first?.diffuse.contents = UIColor.blue
         let bulletNode = SCNNode(geometry: geo)
-        bulletNode.position = SCNVector3(position.x, 2.5, position.z)
+        let yHeight: Float = opponent == nil ? 2.5 : 1
+        bulletNode.position = SCNVector3(position.x, yHeight, position.z)
         bulletNode.physicsBody = SCNPhysicsBody.dynamic()
+        bulletNode.physicsBody?.contactTestBitMask = (opponent == nil) ?
+            Collider.opponent | Collider.impediment  :
+            Collider.bulletOpp | Collider.player | Collider.impediment
         bulletNode.physicsBody?.isAffectedByGravity = false
-        bulletNode.physicsBody?.contactTestBitMask = Collider.bulletOpp | Collider.opponent | Collider.impediment
-        bulletNode.physicsBody?.categoryBitMask = Collider.bullet
-        bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
-        bulletNode.name = "bullet"
-        return bulletNode
-    }
-    
-    static func createOppBullet(position: SCNVector3, color: UIColor) -> SCNNode {
-        let geo = SCNSphere(radius: 0.4)
-        geo.materials.first?.diffuse.contents = color
-        let bulletNode = SCNNode(geometry: geo)
-        bulletNode.position = SCNVector3(position.x, 1, position.z)
-        bulletNode.physicsBody = SCNPhysicsBody.dynamic()
-        bulletNode.physicsBody?.contactTestBitMask = Collider.player | Collider.bullet | Collider.impediment
-        bulletNode.physicsBody?.categoryBitMask = Collider.bulletOpp
-        bulletNode.physicsBody?.collisionBitMask = Collider.bullet | Collider.player | Collider.impediment
-        bulletNode.physicsBody?.isAffectedByGravity = false
+        bulletNode.physicsBody?.categoryBitMask = (opponent == nil) ? Collider.bullet : Collider.bulletOpp
+        bulletNode.physicsBody?.collisionBitMask = (opponent == nil) ?
+            Collider.bulletOpp | Collider.opponent | Collider.impediment | Collider.bullet :
+            Collider.bulletOpp | Collider.player | Collider.impediment | Collider.bullet
         bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
         bulletNode.name = "bullet"
         return bulletNode

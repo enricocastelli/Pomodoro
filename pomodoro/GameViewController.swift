@@ -30,7 +30,8 @@ class GameViewController: UIViewController {
         FruitEvent(position: SCNVector3(36, 1, -74), fruit: .Pear),
         FruitEvent(position: SCNVector3(87, 1, -100), fruit: .Pear),
         FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear),
-        FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Apple)
+        FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange),
+        HideSpotEvent(position: SCNVector3(91, 1, -94), z: false),
     ]
 
 
@@ -76,6 +77,12 @@ class GameViewController: UIViewController {
             scene.rootNode.addChildNode(pear)
             pear.delegate = self
             pear.activate()
+        case .Orange:
+            let orange = NodeCreator.createOrange()
+            orange.position = event.position
+            scene.rootNode.addChildNode(orange)
+            orange.delegate = self
+            orange.activate()
         }
     }
     
@@ -109,7 +116,7 @@ class GameViewController: UIViewController {
     }
     
     func shoot() {
-        let bulletNode = NodeCreator.createBullet(position: pomodoro.position)
+        let bulletNode = NodeCreator.createBullet(position: pomodoro.position, opponent: nil)
         scene.rootNode.addChildNode(bulletNode)
         bulletNode.physicsBody?.applyForce(SCNVector3(angle.x/4, 0, angle.y/4), asImpulse: true)
         let action = SCNAction.wait(duration: 0.8)
@@ -119,7 +126,7 @@ class GameViewController: UIViewController {
     }
     
     func shootGranade() {
-        let bulletNode = NodeCreator.createGranade(position: pomodoro.position)
+        let bulletNode = NodeCreator.createGranade(position: pomodoro.position, opponent: nil)
         scene.rootNode.addChildNode(bulletNode)
         let force = pomodoro.trowingForce/2
         let hForce = force/5
@@ -134,7 +141,7 @@ class GameViewController: UIViewController {
     }
     
     func shootPrecision() {
-        let bulletNode = NodeCreator.createPrecisionBullet(position: pomodoro.position)
+        let bulletNode = NodeCreator.createPrecisionBullet(position: pomodoro.position, opponent: nil)
         scene.rootNode.addChildNode(bulletNode)
         bulletNode.physicsBody?.applyForce(SCNVector3(angle.x, 0, angle.y), asImpulse: true)
         let action = SCNAction.wait(duration: 0.8)
@@ -274,12 +281,40 @@ extension GameViewController: FruitDelegate {
 
         let shootForce = Calculator.calculateAngle(loc: targetPosition, radius: 13, center: CGPoint(x: CGFloat(fruit.position.x), y: CGFloat(fruit.position.z)))
         
-        let bulletNode = NodeCreator.createOppBullet(position: fruit.presentation.position, color: fruit.color)
+        let bulletNode = bulletFromFruit(fruit: fruit)
         scene.rootNode.addChildNode(bulletNode)
-        bulletNode.physicsBody?.applyForce(SCNVector3(shootForce.x, 0, shootForce.y), asImpulse: true)
+        
+        let vector = ForceForArmy(army: fruit.army, shootForce: shootForce)
+        bulletNode.physicsBody?.applyForce(vector, asImpulse: true)
         let action = SCNAction.wait(duration: 0.8)
         bulletNode.runAction(action) {
             bulletNode.removeFromParentNode()
+        }
+    }
+    
+    func bulletFromFruit(fruit: Fruit) -> SCNNode {
+        switch fruit.army {
+        case .pomodorino:
+            return NodeCreator.createBullet(position: fruit.presentation.position, opponent: fruit)
+        case .granade:
+            return NodeCreator.createGranade(position: fruit.presentation.position, opponent: fruit)
+        case .precision:
+            return NodeCreator.createPrecisionBullet(position: fruit.presentation.position, opponent: fruit)
+        case .sugo:
+            return NodeCreator.createBullet(position: fruit.presentation.position, opponent: fruit)
+        }
+    }
+    
+    func ForceForArmy(army: Army, shootForce: CGPoint) -> SCNVector3 {
+        switch army {
+        case .pomodorino:
+            return SCNVector3(shootForce.x, 0, shootForce.y)
+        case .granade:
+            return SCNVector3(shootForce.x/2, 2, shootForce.y/2)
+        case .precision:
+            return SCNVector3(shootForce.x*2, 0, shootForce.y*2)
+        case .sugo:
+            return SCNVector3(shootForce.x, 0, shootForce.y)
         }
     }
 }

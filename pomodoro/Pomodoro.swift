@@ -17,7 +17,7 @@ class Pomodoro : SCNNode {
     
     var shouldBreath = true
     var shouldMove = false
-    var life = 1.0
+    var life: Float = 1.0
     var army = Army.pomodorino
     
     var isTrowing = false
@@ -73,7 +73,7 @@ class Pomodoro : SCNNode {
     
     func prepareGranade() {
         guard granade == nil && trowingArrow == nil else { return }
-        granade = NodeCreator.createGranade(position: coreNode.position)
+        granade = NodeCreator.createGranade(position: coreNode.position, opponent: nil)
         granade?.physicsBody?.isAffectedByGravity = false
         addTrowingArrow()
         addChildNode(granade!)

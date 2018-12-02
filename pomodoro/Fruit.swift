@@ -17,6 +17,7 @@ protocol FruitDelegate {
 enum FruitType {
     case Apple
     case Pear
+    case Orange
 }
 
 class Fruit: SCNNode {
@@ -28,11 +29,15 @@ class Fruit: SCNNode {
     var delegate: FruitDelegate?
     var timer = Timer()
     var timerTime: Double = 1
+    var army = Army.pomodorino
+    var damageInflicting: Float = 1
+    var life: Float = 1
     
     init(node: SCNNode) {
         coreNode = node
         super.init()
         addChildNode(coreNode)
+        setup()
     }
 
     
@@ -44,8 +49,20 @@ class Fruit: SCNNode {
         return SCNNode()
     }
     
+    func setup() {
+        // to be overriden
+    }
+    
     func activate() {
         timer = Timer.scheduledTimer(timeInterval: timerTime, target: self, selector: #selector(trigger), userInfo: nil, repeats: true)
+    }
+    
+    func hit(damage: Float) {
+        life = life - damage
+        if life < 0 {
+            deactivate()
+            die()
+        }
     }
     
     func deactivate() {
@@ -75,35 +92,51 @@ class Fruit: SCNNode {
 
 class Apple: Fruit {
     
-    override var color: UIColor { get {
-            return UIColor.green
-        } set {}}
-    override var impediment: Bool { get {
-        return true
-        } set {}}
-    override var isMoving: Bool { get {
-        return true
-        } set {}}
-    override var timerTime: Double { get {
-        return 1.1
-        } set {}}
+    override func setup() {
+            color = UIColor.green
+            impediment = true
+            isMoving = true
+            timerTime =  1.1
+            damageInflicting = 0.8
+    }
 
 }
 
 
 class Pear: Fruit {
     
-    override var color: UIColor { get {
-        return UIColor.yellow
-        } set {}}
-    override var impediment: Bool { get {
-        return false
-        } set {}}
-    override var isMoving: Bool { get {
-        return false
-        } set {}}
-    override var timerTime: Double { get {
-        return 0.8
-        } set {}}
+    override func setup() {
+        color = UIColor.yellow
+        impediment = false
+        isMoving = false
+        timerTime =  0.8
+        life = 1.5
+    }
+
+}
+
+class Orange: Fruit {
     
+    override func setup() {
+        color = UIColor.orange
+        impediment = false
+        isMoving = true
+        timerTime =  0.7
+        army = .granade
+        damageInflicting = 1.5
+        life = 1.5
+    }
+}
+
+class Plum: Fruit {
+    
+    override func setup() {
+        color = UIColor.purple
+        impediment = false
+        isMoving = false
+        timerTime =  0.5
+        army = .pomodorino
+        damageInflicting = 1.5
+        life = 3
+    }
 }
