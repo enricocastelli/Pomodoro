@@ -12,6 +12,7 @@ import SceneKit
 
 protocol FruitDelegate {
     func shouldShoot(fruit: Fruit)
+    func didTerminate(fruit: Fruit)
 }
 
 enum FruitType {
@@ -34,6 +35,7 @@ class Fruit: SCNNode {
     var damageInflicting: Float = 1
     var life: Float = 1
     var isSleeping = false
+    var isBoss = false
     
     init(node: SCNNode) {
         coreNode = node
@@ -64,7 +66,7 @@ class Fruit: SCNNode {
         isSleeping = false
         if life <= 0 {
             deactivate()
-            die()
+            terminate()
         }
     }
     
@@ -72,7 +74,8 @@ class Fruit: SCNNode {
         timer.invalidate()
     }
     
-    func die() {
+    func terminate() {
+        self.delegate?.didTerminate(fruit: self)
         let particle = SCNParticleSystem(named: "brokeh", inDirectory: "art.scnassets/anims")
         particle?.particleColor = color
         addParticleSystem(particle!)
@@ -143,5 +146,6 @@ class Plum: Fruit {
         army = .pomodorino
         damageInflicting = 1.5
         life = 30
+        isBoss = true
     }
 }

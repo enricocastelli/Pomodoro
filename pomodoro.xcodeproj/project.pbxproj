@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C2E1BC121B4772F000C5C7A /* NodeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2E1BC021B4772F000C5C7A /* NodeExtension.swift */; };
 		1C45F4F821AC1F3F00A23DEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C45F4F721AC1F3F00A23DEB /* AppDelegate.swift */; };
 		1C45F4FA21AC1F3F00A23DEB /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C45F4F921AC1F3F00A23DEB /* art.scnassets */; };
 		1C45F4FC21AC1F3F00A23DEB /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C45F4FB21AC1F3F00A23DEB /* GameViewController.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C2E1BC021B4772F000C5C7A /* NodeExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeExtension.swift; sourceTree = "<group>"; };
 		1C45F4F421AC1F3F00A23DEB /* pomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C45F4F721AC1F3F00A23DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C45F4F921AC1F3F00A23DEB /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 				1C77CFC821B00C68004748AC /* ContactManager.swift */,
 				1C77CFB821AFD579004748AC /* NodeCreator.swift */,
 				1C77CFB621AEE946004748AC /* Fruit.swift */,
+				1C2E1BC021B4772F000C5C7A /* NodeExtension.swift */,
 				1C77CFBE21AFD8D0004748AC /* Pomodoro.swift */,
 				1C77CFD121B07041004748AC /* CameraNode.swift */,
 				1C77CFB421ADBA71004748AC /* Joystick.swift */,
@@ -192,6 +195,7 @@
 				1C77CFD221B07041004748AC /* CameraNode.swift in Sources */,
 				1C77CFB521ADBA71004748AC /* Joystick.swift in Sources */,
 				1C77CFCD21B0115B004748AC /* Calculator.swift in Sources */,
+				1C2E1BC121B4772F000C5C7A /* NodeExtension.swift in Sources */,
 				1C77CFC121AFDE76004748AC /* Events.swift in Sources */,
 				1C77CFB921AFD579004748AC /* NodeCreator.swift in Sources */,
 				1C45F4F821AC1F3F00A23DEB /* AppDelegate.swift in Sources */,

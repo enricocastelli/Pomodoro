@@ -13,12 +13,20 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
     
     static let main = ContactManager()
     
+    var gameVC: GameViewController?
+    
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
         if contact.nodeB.name == "bullet" {
             bulletHandler(bullet: contact.nodeB, other: contact.nodeA)
         } else if contact.nodeA.name == "bullet" {
             bulletHandler(bullet: contact.nodeA, other: contact.nodeB)
         }
+        if contact.nodeB.name == "finish" {
+            handleBonus(bonus: contact.nodeB, other: contact.nodeA)
+        } else if contact.nodeA.name == "finish" {
+            handleBonus(bonus: contact.nodeA, other: contact.nodeB)
+        }
+        
     }
     
     func bulletHandler(bullet: SCNNode, other: SCNNode) {
@@ -59,4 +67,9 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
         }
     }
     
+    func handleBonus(bonus: SCNNode, other: SCNNode) {
+        if other.physicsBody?.categoryBitMask == Collider.player {
+            gameVC?.didFinish(over: false)
+        }
+    }
 }

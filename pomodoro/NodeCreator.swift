@@ -157,7 +157,7 @@ class NodeCreator {
     
     static func createGranade(position: SCNVector3, opponent: Fruit?) -> SCNNode {
         let geo = SCNCapsule(capRadius: 0.3, height: 1)
-        geo.materials.first?.diffuse.contents = UIColor.red
+        geo.materials.first?.diffuse.contents = opponent?.color ?? UIColor.red
         let bulletNode = SCNNode(geometry: geo)
         bulletNode.position = SCNVector3(position.x, 1, position.z)
         bulletNode.physicsBody = SCNPhysicsBody.dynamic()
@@ -192,6 +192,33 @@ class NodeCreator {
         bulletNode.physicsBody?.continuousCollisionDetectionThreshold = 1
         bulletNode.name = "bullet"
         return bulletNode
+    }
+    
+    static func createFinish(position: SCNVector3) -> SCNNode {
+        let geo = SCNSphere(radius: 0.5)
+        geo.materials.first?.diffuse.contents = UIColor.white
+        geo.materials.first?.emission.contents = UIColor.white
+        geo.materials.first?.emission.intensity = 1.0
+        let finishNode = SCNNode(geometry: geo)
+        let omniLight = SCNLight()
+        omniLight.type = .omni
+        omniLight.color = UIColor.white
+        omniLight.intensity = 500
+        finishNode.light = omniLight
+        finishNode.position = SCNVector3(position.x, 1, position.z)
+        finishNode.physicsBody = SCNPhysicsBody.dynamic()
+        finishNode.physicsBody?.contactTestBitMask = Collider.player
+        finishNode.physicsBody?.isAffectedByGravity = false
+        finishNode.physicsBody?.categoryBitMask = Collider.finish
+        finishNode.physicsBody?.collisionBitMask = Collider.finish
+        finishNode.name = "finish"
+        let anim = CABasicAnimation(keyPath: "light.attenuationStartDistance")
+        anim.fromValue = 1000
+        anim.toValue = 100
+        anim.autoreverses = true
+        anim.repeatCount = .infinity
+        finishNode.addAnimation(anim, forKey: nil)
+        return finishNode
     }
     
 }

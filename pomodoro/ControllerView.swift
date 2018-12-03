@@ -100,6 +100,15 @@ class ControllerView: UIView {
         self.addSubview(view)
     }
     
+    func win() {
+        let winView = UIView(frame: self.frame)
+        winView.backgroundColor = UIColor.white
+        winView.alpha = 0
+        self.addSubview(winView)
+        UIView.animate(withDuration: 1) {
+            winView.alpha = 1
+        }
+    }
 }
 
 extension ControllerView: UIGestureRecognizerDelegate {

@@ -14,6 +14,9 @@ class Collider {
     static let opponent : Int = 8
     static let impediment: Int = 16
     static let floor: Int = 32
+    
+    static let finish: Int = 36
+    
     static let bullet: Int = 64
     static let granade: Int = 68
     static let precision: Int = 72
