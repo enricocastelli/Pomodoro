@@ -339,7 +339,6 @@ extension GameViewController: FruitDelegate {
         case .pomodorino:
             return SCNVector3(shootForce.x, 0, shootForce.y)
         case .granade:
-            print(distance/6)
             return SCNVector3(shootForce.x/3, distance/5, shootForce.y/3)
         case .precision:
             return SCNVector3(shootForce.x*2, 0, shootForce.y*2)

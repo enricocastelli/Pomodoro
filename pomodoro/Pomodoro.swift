@@ -23,11 +23,12 @@ class Pomodoro : SCNNode {
     
     var shouldBreath = true
     var shouldMove = false
-    var life: Float = 20.0
+    var life: Float = 10.0
     var army = Army.pomodorino
     
     var isTrowing = false
     var isPointing = false
+    var canBeHit = true
     
     var trowingForce : CGFloat = 0.0 {
         didSet {
@@ -79,11 +80,19 @@ class Pomodoro : SCNNode {
     }
     
     func hit(damage: Float) {
+        guard canBeHit else { return }
         delegate.isHit()
         print("hit by \(damage), life: \(life)")
         life = life - damage
         if life <= 0 {
             die()
+        } else {
+            canBeHit = false
+            self.opacity = 0.7
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
+                self.canBeHit = true
+                self.opacity = 1
+            })
         }
     }
     

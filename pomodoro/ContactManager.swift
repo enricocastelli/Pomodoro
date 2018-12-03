@@ -48,8 +48,8 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
                 bullet.physicsBody?.categoryBitMask == Collider.precisionOpp )
         {
             if let pomodoro = other as? Pomodoro {
-                pomodoro.hit(damage: getDamageFromBullet(bullet: bullet))
                 bullet.removeFromParentNode()
+                pomodoro.hit(damage: getDamageFromBullet(bullet: bullet))
             }
         }
     }

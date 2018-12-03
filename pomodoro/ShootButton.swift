@@ -13,6 +13,7 @@ class ShootButton: UIButton {
     
     var delegate: JoyDelegate?
     var count = 0
+    var canShoot = true
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
@@ -22,8 +23,9 @@ class ShootButton: UIButton {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard canShoot else { return }
         count += 1
-        if count >= 5 {
+        if count == 5 {
             recharge()
         } else {
             delegate?.didShoot()
@@ -31,11 +33,11 @@ class ShootButton: UIButton {
     }
     
     func recharge() {
-        isUserInteractionEnabled = false
+        canShoot = false
         count = 0
         layer.borderColor = UIColor.white.cgColor
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
-            self.isUserInteractionEnabled = true
+            self.canShoot = true
             self.layer.borderColor = UIColor.red.cgColor
         })
     }
@@ -43,9 +45,6 @@ class ShootButton: UIButton {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         delegate?.didPressForce(force: touch.force)
-//        if touch.force > 6.4 {
-//            delegate?.didPressForce()
-//        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
