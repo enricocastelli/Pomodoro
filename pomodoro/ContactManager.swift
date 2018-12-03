@@ -69,7 +69,9 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
     
     func handleBonus(bonus: SCNNode, other: SCNNode) {
         if other.physicsBody?.categoryBitMask == Collider.player {
-            gameVC?.didFinish(over: false)
+            if let bonusObject = bonus.parent as? Bonus, bonusObject.activated {
+                gameVC?.didFinish(over: false)
+            }
         }
     }
 }

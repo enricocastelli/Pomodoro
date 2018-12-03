@@ -14,6 +14,7 @@
 		1C45F4FF21AC1F3F00A23DEB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C45F4FD21AC1F3F00A23DEB /* Main.storyboard */; };
 		1C45F50121AC1F4000A23DEB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C45F50021AC1F4000A23DEB /* Assets.xcassets */; };
 		1C45F50421AC1F4000A23DEB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C45F50221AC1F4000A23DEB /* LaunchScreen.storyboard */; };
+		1C609F7D21B53FD300634A6F /* Bonus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C609F7C21B53FD300634A6F /* Bonus.swift */; };
 		1C6DDBFA21B17155007FE794 /* ControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6DDBF921B17155007FE794 /* ControllerView.swift */; };
 		1C77CFB521ADBA71004748AC /* Joystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C77CFB421ADBA71004748AC /* Joystick.swift */; };
 		1C77CFB721AEE946004748AC /* Fruit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C77CFB621AEE946004748AC /* Fruit.swift */; };
@@ -41,6 +42,7 @@
 		1C45F50021AC1F4000A23DEB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1C45F50321AC1F4000A23DEB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C45F50521AC1F4000A23DEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C609F7C21B53FD300634A6F /* Bonus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonus.swift; sourceTree = "<group>"; };
 		1C6DDBF921B17155007FE794 /* ControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerView.swift; sourceTree = "<group>"; };
 		1C77CFB421ADBA71004748AC /* Joystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Joystick.swift; sourceTree = "<group>"; };
 		1C77CFB621AEE946004748AC /* Fruit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fruit.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				1C77CFDE21B0A64E004748AC /* ArmyButton.swift */,
 				1C77CFC021AFDE76004748AC /* Events.swift */,
 				1C77CFD821B097FE004748AC /* Army.swift */,
+				1C609F7C21B53FD300634A6F /* Bonus.swift */,
 				1C77CFBA21AFD5F8004748AC /* Values.swift */,
 				1C77CFCC21B0115B004748AC /* Calculator.swift */,
 				1C880AE621ACA34800712FF6 /* Collider.swift */,
@@ -193,6 +196,7 @@
 				1C77CFC921B00C68004748AC /* ContactManager.swift in Sources */,
 				1C45F4FC21AC1F3F00A23DEB /* GameViewController.swift in Sources */,
 				1C77CFD221B07041004748AC /* CameraNode.swift in Sources */,
+				1C609F7D21B53FD300634A6F /* Bonus.swift in Sources */,
 				1C77CFB521ADBA71004748AC /* Joystick.swift in Sources */,
 				1C77CFCD21B0115B004748AC /* Calculator.swift in Sources */,
 				1C2E1BC121B4772F000C5C7A /* NodeExtension.swift in Sources */,

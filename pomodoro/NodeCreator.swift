@@ -194,30 +194,25 @@ class NodeCreator {
         return bulletNode
     }
     
-    static func createFinish(position: SCNVector3) -> SCNNode {
+    static func createFinish(position: SCNVector3) -> Bonus {
         let geo = SCNSphere(radius: 0.5)
         geo.materials.first?.diffuse.contents = UIColor.white
         geo.materials.first?.emission.contents = UIColor.white
         geo.materials.first?.emission.intensity = 1.0
-        let finishNode = SCNNode(geometry: geo)
+        let box = SCNNode(geometry: geo)
+        let finishNode = Bonus(node: box, type: .finish)
         let omniLight = SCNLight()
         omniLight.type = .omni
         omniLight.color = UIColor.white
-        omniLight.intensity = 500
+        omniLight.intensity = 0
         finishNode.light = omniLight
         finishNode.position = SCNVector3(position.x, 1, position.z)
-        finishNode.physicsBody = SCNPhysicsBody.dynamic()
-        finishNode.physicsBody?.contactTestBitMask = Collider.player
-        finishNode.physicsBody?.isAffectedByGravity = false
-        finishNode.physicsBody?.categoryBitMask = Collider.finish
-        finishNode.physicsBody?.collisionBitMask = Collider.finish
-        finishNode.name = "finish"
-        let anim = CABasicAnimation(keyPath: "light.attenuationStartDistance")
-        anim.fromValue = 1000
-        anim.toValue = 100
-        anim.autoreverses = true
-        anim.repeatCount = .infinity
-        finishNode.addAnimation(anim, forKey: nil)
+        finishNode.coreNode.physicsBody = SCNPhysicsBody.static()
+        finishNode.coreNode.physicsBody?.contactTestBitMask = Collider.player
+        finishNode.coreNode.physicsBody?.isAffectedByGravity = false
+        finishNode.coreNode.physicsBody?.categoryBitMask = Collider.finish
+        finishNode.coreNode.physicsBody?.collisionBitMask = Collider.impediment
+        finishNode.coreNode.name = "finish"
         return finishNode
     }
     

@@ -14,6 +14,7 @@ class GameViewController: UIViewController {
     
     var pomodoro: Pomodoro!
     var cameraNode: CameraNode!
+    var finishNode: Bonus?
     var scnView: SCNView!
     var scene: SCNScene!
     
@@ -48,6 +49,8 @@ class GameViewController: UIViewController {
             executeFruitEvent(event: fruit)
         } else if let hideSpot = event as? HideSpotEvent {
             addImp(pos: event.position, z: hideSpot.z)
+        } else if let bonus = event as? BonusEvent {
+            addBonus(event: bonus)
         }
     }
     
@@ -56,8 +59,10 @@ class GameViewController: UIViewController {
         case .Apple:
             let apple = NodeCreator.createApple()
             apple.position = event.position
-            addImp(pos: SCNVector3(event.position.x, 0, event.position.z + 5), z: false)
             scene.rootNode.addChildNode(apple)
+            if apple.impediment {
+                addImp(pos: SCNVector3(event.position.x, 0, event.position.z + 5), z: false)
+            }
             apple.delegate = self
             apple.isSleeping = event.sleeping
             apple.activate()
@@ -79,9 +84,18 @@ class GameViewController: UIViewController {
             let plum = NodeCreator.createPlum()
             plum.position = event.position
             scene.rootNode.addChildNode(plum)
+            if let bonus = plum.bonus { addBonus(event: bonus )}
             plum.delegate = self
             plum.isSleeping = event.sleeping
             plum.activate()
+        }
+    }
+    
+    func addBonus(event: BonusEvent) {
+        switch event.type {
+        case .finish:
+            finishNode = NodeCreator.createFinish(position: event.position)
+            scene.rootNode.addChildNode(finishNode!)
         }
     }
     
@@ -296,9 +310,10 @@ extension GameViewController: FruitDelegate {
     }
     
     func didTerminate(fruit: Fruit) {
-        if fruit.isBoss {
-            let finish = NodeCreator.createFinish(position: fruit.presentation.position)
-            scene.rootNode.addChildNode(finish)
+        if let bonus = fruit.bonus {
+            if bonus.type == .finish {
+                finishNode?.activate()
+            }
         }
     }
     
@@ -320,7 +335,7 @@ extension GameViewController: FruitDelegate {
         case .pomodorino:
             return SCNVector3(shootForce.x, 0, shootForce.y)
         case .granade:
-            return SCNVector3(shootForce.x/2, 2, shootForce.y/2)
+            return SCNVector3(shootForce.x/2, 5, shootForce.y/2)
         case .precision:
             return SCNVector3(shootForce.x*2, 0, shootForce.y*2)
         case .sugo:

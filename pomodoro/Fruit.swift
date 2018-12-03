@@ -35,7 +35,7 @@ class Fruit: SCNNode {
     var damageInflicting: Float = 1
     var life: Float = 1
     var isSleeping = false
-    var isBoss = false
+    var bonus: BonusEvent?
     
     init(node: SCNNode) {
         coreNode = node
@@ -146,6 +146,6 @@ class Plum: Fruit {
         army = .pomodorino
         damageInflicting = 1.5
         life = 30
-        isBoss = true
+        bonus = BonusEvent(position: SCNVector3(92, 1, -140), type: .finish)
     }
 }

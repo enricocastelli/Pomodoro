@@ -50,7 +50,7 @@ class Event: NSObject {
         FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear, sleeping: true),
         FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange, sleeping: true),
         HideSpotEvent(position: SCNVector3(80, 0, -89), z: false),
-        FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true),
+        FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true)
         ]
 }
 
@@ -74,11 +74,12 @@ class HideSpotEvent: Event {
     }
 }
 
-class CameraTurnEvent: Event {
-    var direction: Direction
+class BonusEvent: Event {
     
-    init(position: SCNVector3, cameraTurn: Direction) {
-        self.direction = cameraTurn
+    var type: BonusType
+    
+    init(position: SCNVector3, type: BonusType) {
+        self.type = type
         super.init(position: position)
     }
 }
