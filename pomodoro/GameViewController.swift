@@ -173,7 +173,7 @@ extension GameViewController : SCNSceneRendererDelegate {
         let zComponent = cameraPosition.z * (1 - camDamping) + targetPosition.z * camDamping
         cameraPosition = SCNVector3(x: xComponent, y: yComponent, z: zComponent)
         cameraNode.position = cameraPosition
-        if shouldMove() {
+        if shouldMove() && !scene.isPaused {
         pomodoro.position = SCNVector3(pomodoro.position.x + direction.x, 0, pomodoro.position.z + direction.z)
         pomodoro.rotation = rotation
         }
@@ -302,10 +302,14 @@ extension GameViewController: FruitDelegate {
         guard fruit.position.z + 40 > pomodoro.position.z else { return }
         fruit.movingTo(pos: pomodoro.position.x)
         let targetPosition = CGPoint(x: CGFloat(pomodoro.position.x), y: CGFloat(pomodoro.position.z))
-        let shootForce = Calculator.calculateAngle(loc: targetPosition, radius: 13, center: CGPoint(x: CGFloat(fruit.position.x), y: CGFloat(fruit.position.z)))
+        let fruitPosition = CGPoint(x: CGFloat(fruit.position.x), y: CGFloat(fruit.position.z))
+        let shootForce = Calculator.calculateAngle(loc: targetPosition, radius: 13, center: fruitPosition)
         let bulletNode = bulletFromFruit(fruit: fruit)
         scene.rootNode.addChildNode(bulletNode)
-        let vector = forceForArmy(army: fruit.army, shootForce: shootForce)
+        let distanceX = abs(abs(targetPosition.x) - abs(fruitPosition.x))
+        let distanceZ = abs(abs(targetPosition.y) - abs(fruitPosition.y))
+        let maxDistance = (distanceX >= distanceZ) ? distanceX : distanceZ
+        let vector = forceForArmy(army: fruit.army, shootForce: shootForce, distance: maxDistance)
         bulletNode.shootBullet(army: fruit.army, force: vector)
     }
     
@@ -330,12 +334,13 @@ extension GameViewController: FruitDelegate {
         }
     }
     
-    private func forceForArmy(army: Army, shootForce: CGPoint) -> SCNVector3 {
+    private func forceForArmy(army: Army, shootForce: CGPoint, distance: CGFloat) -> SCNVector3 {
         switch army {
         case .pomodorino:
             return SCNVector3(shootForce.x, 0, shootForce.y)
         case .granade:
-            return SCNVector3(shootForce.x/2, 5, shootForce.y/2)
+            print(distance/6)
+            return SCNVector3(shootForce.x/3, distance/5, shootForce.y/3)
         case .precision:
             return SCNVector3(shootForce.x*2, 0, shootForce.y*2)
         case .sugo:

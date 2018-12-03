@@ -12,6 +12,7 @@ import UIKit
 class ShootButton: UIButton {
     
     var delegate: JoyDelegate?
+    var count = 0
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
@@ -21,7 +22,22 @@ class ShootButton: UIButton {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        delegate?.didShoot()
+        count += 1
+        if count >= 5 {
+            recharge()
+        } else {
+            delegate?.didShoot()
+        }
+    }
+    
+    func recharge() {
+        isUserInteractionEnabled = false
+        count = 0
+        layer.borderColor = UIColor.white.cgColor
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
+            self.isUserInteractionEnabled = true
+            self.layer.borderColor = UIColor.red.cgColor
+        })
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
