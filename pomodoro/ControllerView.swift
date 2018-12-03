@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import SceneKit
+import AudioToolbox
 
 class ControllerView: UIView {
     
@@ -64,6 +65,7 @@ class ControllerView: UIView {
     
     func didChangeArmy(army: Army) {
         armyButton.army = army
+        shooter.rechargeCount = army.rechargeCount()
     }
     
     func insertShooterView() {
@@ -94,20 +96,30 @@ class ControllerView: UIView {
         return circle
     }
     
-    func gameOver() {
-        let view = UIView(frame: self.frame)
-        view.backgroundColor = UIColor.red
-        self.addSubview(view)
-    }
-    
-    func win() {
+    func gameOver(over: Bool) {
         let winView = UIView(frame: self.frame)
-        winView.backgroundColor = UIColor.white
+        winView.backgroundColor = over ? UIColor.red : UIColor.white
         winView.alpha = 0
+        if over { AudioServicesPlayAlertSound(kSystemSoundID_Vibrate) }
         self.addSubview(winView)
         UIView.animate(withDuration: 1) {
             winView.alpha = 1
+            self.addRetry()
         }
+    }
+    
+    func addRetry() {
+        let butt = UIButton(type: .roundedRect)
+        butt.frame = CGRect(x: 0, y: 0, width: 100, height: 70)
+        butt.center = self.center
+        butt.setTitle("RETRY", for: .normal)
+        butt.addTarget(self, action: #selector(restart), for: .touchUpInside)
+        self.addSubview(butt)
+    }
+    
+    @objc func restart() {
+        let gameVC = GameViewController.instantiate()
+        Navigation.main.pushViewController(gameVC, animated: true)
     }
 }
 

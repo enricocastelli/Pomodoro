@@ -82,16 +82,13 @@ class Pomodoro : SCNNode {
     func hit(damage: Float) {
         guard canBeHit else { return }
         delegate.isHit()
-        print("hit by \(damage), life: \(life)")
         life = life - damage
         if life <= 0 {
             die()
         } else {
             canBeHit = false
-            self.opacity = 0.7
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5, execute: {
                 self.canBeHit = true
-                self.opacity = 1
             })
         }
     }

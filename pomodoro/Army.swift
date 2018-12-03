@@ -26,4 +26,17 @@ enum Army {
             return 1
         }
     }
+    
+    func rechargeCount() -> Double {
+        switch self {
+        case .pomodorino:
+            return 5
+        case .granade:
+            return Double.infinity
+        case .precision:
+            return 3
+        case .sugo:
+            return Double.infinity
+        }
+    }
 }

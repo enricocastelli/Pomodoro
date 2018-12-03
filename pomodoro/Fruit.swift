@@ -145,7 +145,7 @@ class Plum: Fruit {
         timerTime =  1
         army = .pomodorino
         damageInflicting = 1.5
-        life = 30
+        life = 20
         bonus = BonusEvent(position: SCNVector3(92, 1, -140), type: .finish)
     }
 }

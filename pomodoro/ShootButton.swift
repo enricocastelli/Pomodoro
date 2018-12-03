@@ -12,8 +12,9 @@ import UIKit
 class ShootButton: UIButton {
     
     var delegate: JoyDelegate?
-    var count = 0
+    var count = 0.0
     var canShoot = true
+    var rechargeCount = 5.0
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
@@ -25,10 +26,9 @@ class ShootButton: UIButton {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard canShoot else { return }
         count += 1
-        if count == 5 {
+        delegate?.didShoot()
+        if count >= rechargeCount {
             recharge()
-        } else {
-            delegate?.didShoot()
         }
     }
     

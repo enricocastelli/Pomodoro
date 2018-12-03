@@ -23,6 +23,10 @@ class GameViewController: UIViewController {
     var rotation = SCNVector4(0, 0, 0, 0)
     var angle = CGPoint(x: 0, y: 0)
 
+    static func instantiate() -> GameViewController
+    {
+        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "GameViewController") as! GameViewController
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -132,11 +136,7 @@ class GameViewController: UIViewController {
         scnView.isPlaying = false
         scene.isPaused = true
         DispatchQueue.main.async {
-            if over {
-                self.controller.gameOver()
-            } else {
-                self.controller.win()
-            }
+            self.controller.gameOver(over: over)
         }
     }
     
