@@ -119,7 +119,8 @@ class ControllerView: UIView {
     
     @objc func restart() {
         let gameVC = GameViewController.instantiate()
-        Navigation.main.pushViewController(gameVC, animated: true)
+        Values.reset()
+        Navigation.main.viewControllers = [gameVC]
     }
 }
 

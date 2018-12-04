@@ -22,7 +22,8 @@ class GameViewController: UIViewController {
     var direction = SCNVector3(0, 0, 0)
     var rotation = SCNVector4(0, 0, 0, 0)
     var angle = CGPoint(x: 0, y: 0)
-
+    var events : [Event] = Event.getHardEvents()
+    
     static func instantiate() -> GameViewController
     {
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "GameViewController") as! GameViewController
@@ -63,7 +64,9 @@ class GameViewController: UIViewController {
         case .Apple:
             let apple = NodeCreator.createApple()
             apple.position = event.position
-            scene.rootNode.addChildNode(apple)
+            scnView.prepare([apple]) { (done) in
+                self.scene.rootNode.addChildNode(apple)
+            }
             if apple.impediment {
                 addImp(pos: SCNVector3(event.position.x, 0, event.position.z + 5), z: false)
             }
@@ -73,21 +76,27 @@ class GameViewController: UIViewController {
         case .Pear:
             let pear = NodeCreator.createPear()
             pear.position = event.position
-            scene.rootNode.addChildNode(pear)
+            scnView.prepare([pear]) { (done) in
+                self.scene.rootNode.addChildNode(pear)
+            }
             pear.delegate = self
             pear.isSleeping = event.sleeping
             pear.activate()
         case .Orange:
             let orange = NodeCreator.createOrange()
             orange.position = event.position
-            scene.rootNode.addChildNode(orange)
+            scnView.prepare([orange]) { (done) in
+                self.scene.rootNode.addChildNode(orange)
+            }
             orange.delegate = self
             orange.isSleeping = event.sleeping
             orange.activate()
         case .Plum:
             let plum = NodeCreator.createPlum()
             plum.position = event.position
-            scene.rootNode.addChildNode(plum)
+            scnView.prepare([plum]) { (done) in
+                if done { self.scene.rootNode.addChildNode(plum) }
+            }
             if let bonus = plum.bonus { addBonus(event: bonus )}
             plum.delegate = self
             plum.isSleeping = event.sleeping
@@ -99,7 +108,9 @@ class GameViewController: UIViewController {
         switch event.type {
         case .finish:
             finishNode = NodeCreator.createFinish(position: event.position)
-            scene.rootNode.addChildNode(finishNode!)
+            scnView.prepare([finishNode]) { (done) in
+                self.scene.rootNode.addChildNode(self.finishNode!)
+            }
         }
     }
     
@@ -197,9 +208,10 @@ extension GameViewController : SCNSceneRendererDelegate {
     }
     
     func eventChecker() {
-        for index in 0...Event.hardEvents.count - 1 {
-            let event = Event.hardEvents[index]
-            if abs(pomodoro.position.z) > abs(event.position.z) - Float(Values.zFar) && event.added == false {
+        for index in 0...events.count - 1 {
+            let event = events[index]
+            let zFar = Float(Values.zFar) - (event.specificFar ?? 0)
+            if abs(pomodoro.position.z) + zFar > abs(event.position.z)  && event.added == false {
                 event.added = true
                 executeEvent(event: event)
                 break
@@ -281,7 +293,7 @@ extension GameViewController: PomoDelegate {
     
     func isHit() {
         DispatchQueue.main.async {
-            self.controller.lifeProgress.progress = self.pomodoro.life/20
+            self.controller.lifeProgress.progress = self.pomodoro.life/10
         }
     }
     

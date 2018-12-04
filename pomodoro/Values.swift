@@ -19,6 +19,15 @@ class Values {
     static var zDistance: Float = 13
     static var focalLength: CGFloat = 20.784608840942383
     
+    
+    static func reset() {
+        zFar = 70.0
+        fStop = 100
+        yDistance = 4
+        xDistance = 0
+        zDistance = 13
+        focalLength = 20.784608840942383
+    }
     /*
      static var zFar: Double = 70.0
      static var fStop: CGFloat = 100
