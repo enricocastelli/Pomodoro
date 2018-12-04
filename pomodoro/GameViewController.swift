@@ -64,8 +64,10 @@ class GameViewController: UIViewController {
         case .Apple:
             let apple = NodeCreator.createApple()
             apple.position = event.position
-            scnView.prepare([apple]) { (done) in
-                self.scene.rootNode.addChildNode(apple)
+            DispatchQueue.main.async {
+                self.scnView.prepare([apple]) { (done) in
+                    self.scene.rootNode.addChildNode(apple)
+                }
             }
             if apple.impediment {
                 addImp(pos: SCNVector3(event.position.x, 0, event.position.z + 5), z: false)
@@ -94,10 +96,10 @@ class GameViewController: UIViewController {
         case .Plum:
             let plum = NodeCreator.createPlum()
             plum.position = event.position
-            scnView.prepare([plum]) { (done) in
+            self.scnView.prepare([plum]) { (done) in
                 if done { self.scene.rootNode.addChildNode(plum) }
             }
-            if let bonus = plum.bonus { addBonus(event: bonus )}
+            if let bonus = plum.bonus { self.addBonus(event: bonus )}
             plum.delegate = self
             plum.isSleeping = event.sleeping
             plum.activate()
@@ -107,9 +109,11 @@ class GameViewController: UIViewController {
     func addBonus(event: BonusEvent) {
         switch event.type {
         case .finish:
-            finishNode = NodeCreator.createFinish(position: event.position)
-            scnView.prepare([finishNode]) { (done) in
-                self.scene.rootNode.addChildNode(self.finishNode!)
+            DispatchQueue.main.async {
+                self.finishNode = NodeCreator.createFinish(position: event.position)
+                self.scnView.prepare([self.finishNode!]) { (done) in
+                    self.scene.rootNode.addChildNode(self.finishNode!)
+                }
             }
         }
     }
