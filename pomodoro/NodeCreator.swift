@@ -201,11 +201,6 @@ class NodeCreator {
         geo.materials.first?.emission.intensity = 1.0
         let box = SCNNode(geometry: geo)
         let finishNode = Bonus(node: box, type: .finish)
-        let omniLight = SCNLight()
-        omniLight.type = .omni
-        omniLight.color = UIColor.white
-        omniLight.intensity = 0
-        finishNode.light = omniLight
         finishNode.position = SCNVector3(position.x, 1, position.z)
         finishNode.coreNode.physicsBody = SCNPhysicsBody.static()
         finishNode.coreNode.physicsBody?.contactTestBitMask = Collider.player
@@ -216,4 +211,11 @@ class NodeCreator {
         return finishNode
     }
     
+    static func createLight() -> SCNLight {
+        let omniLight = SCNLight()
+        omniLight.type = .omni
+        omniLight.color = UIColor.white
+        omniLight.intensity = 0
+        return omniLight
+    }
 }

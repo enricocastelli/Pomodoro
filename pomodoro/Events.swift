@@ -54,7 +54,7 @@ class Event: NSObject {
             FruitEvent(position: SCNVector3(94, 1, -100), fruit: .Pear, sleeping: true),
             FruitEvent(position: SCNVector3(91, 1, -100), fruit: .Orange, sleeping: true),
             HideSpotEvent(position: SCNVector3(80, 0, -89), z: false),
-            FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true)
+            FruitEvent(position: SCNVector3(92, 1, -140), fruit: .Plum, sleeping: true, specificFar: 20)
         ]
     }
 }

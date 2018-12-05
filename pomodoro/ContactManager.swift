@@ -30,6 +30,7 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
     }
     
     func bulletHandler(bullet: SCNNode, other: SCNNode) {
+        let army = getArmyFromBullet(bullet: bullet)
         if other.physicsBody?.categoryBitMask == Collider.opponent {
             if let fruit = other as? Fruit, (
                 bullet.physicsBody?.categoryBitMask == Collider.bullet ||
@@ -37,8 +38,8 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
                 bullet.physicsBody?.categoryBitMask == Collider.precision )
                 
             {
-                fruit.hit(damage: getDamageFromBullet(bullet: bullet))
-                bullet.removeFromParentNode()
+                fruit.hit(damage: army.damage())
+                bullet.explode(army: army, direct: true)
             }
         } else if other.physicsBody?.categoryBitMask == Collider.impediment {
 
@@ -48,22 +49,22 @@ class ContactManager: NSObject, SCNPhysicsContactDelegate {
                 bullet.physicsBody?.categoryBitMask == Collider.precisionOpp )
         {
             if let pomodoro = other as? Pomodoro {
-                bullet.removeFromParentNode()
-                pomodoro.hit(damage: getDamageFromBullet(bullet: bullet))
+                bullet.explode(army: army, direct: true)
+                pomodoro.hit(damage: getArmyFromBullet(bullet: bullet).damage())
             }
         }
     }
     
-    func getDamageFromBullet(bullet: SCNNode) -> Float {
+    func getArmyFromBullet(bullet: SCNNode) -> Army {
         switch bullet.physicsBody?.categoryBitMask {
         case Collider.bullet:
-            return 1
+            return Army.pomodorino
         case Collider.granade:
-            return 1.5
+            return Army.granade
         case Collider.precision:
-            return 1.5
+            return Army.precision
         default:
-            return 1
+            return Army.pomodorino
         }
     }
     

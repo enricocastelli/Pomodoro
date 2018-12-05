@@ -27,6 +27,19 @@ enum Army {
         }
     }
     
+    func damage() -> Float {
+        switch self {
+        case .pomodorino:
+            return 1
+        case .granade:
+            return 1.5
+        case .precision:
+            return 1.4
+        case .sugo:
+            return 1
+        }
+    }
+    
     func rechargeCount() -> Double {
         switch self {
         case .pomodorino:

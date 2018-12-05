@@ -14,7 +14,6 @@ class GameViewController: UIViewController {
     
     var pomodoro: Pomodoro!
     var cameraNode: CameraNode!
-    var finishNode: Bonus?
     var scnView: SCNView!
     var scene: SCNScene!
     
@@ -99,7 +98,6 @@ class GameViewController: UIViewController {
             self.scnView.prepare([plum]) { (done) in
                 if done { self.scene.rootNode.addChildNode(plum) }
             }
-            if let bonus = plum.bonus { self.addBonus(event: bonus )}
             plum.delegate = self
             plum.isSleeping = event.sleeping
             plum.activate()
@@ -109,11 +107,15 @@ class GameViewController: UIViewController {
     func addBonus(event: BonusEvent) {
         switch event.type {
         case .finish:
-            DispatchQueue.main.async {
-                self.finishNode = NodeCreator.createFinish(position: event.position)
-                self.scnView.prepare([self.finishNode!]) { (done) in
-                    self.scene.rootNode.addChildNode(self.finishNode!)
-                }
+            DispatchQueue.global(qos: .background).async {
+               let finishNode = NodeCreator.createFinish(position: event.position)
+                let light = NodeCreator.createLight()
+                finishNode.light = light
+                self.scnView.prepare(finishNode, shouldAbortBlock: { () -> Bool in
+                    self.scene.rootNode.addChildNode(finishNode)
+                    finishNode.activate()
+                    return false
+                })
             }
         }
     }
@@ -312,6 +314,7 @@ extension GameViewController: PomoDelegate {
 extension GameViewController: FruitDelegate {
     
     func shouldShoot(fruit: Fruit) {
+        return
         guard scene.rootNode.childNodes.contains(fruit) else {
             fruit.deactivate()
             return }
@@ -332,7 +335,7 @@ extension GameViewController: FruitDelegate {
     func didTerminate(fruit: Fruit) {
         if let bonus = fruit.bonus {
             if bonus.type == .finish {
-                finishNode?.activate()
+                addBonus(event: bonus)
             }
         }
     }
