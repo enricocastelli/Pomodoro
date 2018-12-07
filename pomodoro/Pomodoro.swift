@@ -10,51 +10,29 @@ import Foundation
 import UIKit
 import SceneKit
 
-protocol PomoDelegate {
-    func isHit()
-    func isOver()
-}
-
-class Pomodoro : SCNNode {
-    
-    var coreNode: SCNNode
-    var delegate: GameViewController
-    var actionTimer = Timer()
+class Pomodoro : Fruit {
     
     var shouldBreath = true
     var shouldMove = false
-    var life: Float = 10.0
-    var army = Army.pomodorino
     
     var isTrowing = false
     var isPointing = false
-    var canBeHit = true
-    
     var trowingForce : CGFloat = 0.0 {
         didSet {
             updateArrow()
         }
     }
     var trowingLength : CGFloat = 0.0
-    
     var granade: SCNNode?
     var trowingArrow: SCNNode?
 
     
-    init(node: SCNNode, delegate: GameViewController) {
-        self.coreNode = node
-        self.delegate = delegate
-        super.init()
-        addChildNode(coreNode)
-        start()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func start() {
-        actionTimer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: #selector(timerTrigger), userInfo: nil, repeats: true)
+    override func setup() {
+        color = UIColor.red
+        army = .pomodorino
+        life = 10
+        timerTime = 0.8
+        activate()
     }
     
     func isStill() {
@@ -79,22 +57,9 @@ class Pomodoro : SCNNode {
         })
     }
     
-    func hit(damage: Float) {
-        guard canBeHit else { return }
-        delegate.isHit()
-        life = life - damage
-        if life <= 0 {
-            die()
-        } else {
-            canBeHit = false
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5, execute: {
-                self.canBeHit = true
-            })
-        }
-    }
-    
-    func die() {
-        delegate.isOver()
+    override func hit(damage: Float){
+        super.hit(damage: damage)
+        delegate?.isHit()
     }
     
     func prepareGranade() {
@@ -133,7 +98,7 @@ class Pomodoro : SCNNode {
         coreNode.runAction(walkReset)
     }
     
-    @objc func timerTrigger() {
+    @objc override func trigger() {
         if shouldBreath && !shouldMove {
             let breatheAction = SCNAction.scale(by: 1.1, duration: 0.4)
             coreNode.runAction(breatheAction) {

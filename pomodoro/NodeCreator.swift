@@ -68,10 +68,10 @@ class NodeCreator {
         node.physicsBody?.categoryBitMask = Collider.impediment
     }
     
-    static func createPomodoro(delegate: GameViewController) -> Pomodoro {
+    static func createPomodoro() -> Pomodoro {
         let boxScene = SCNScene(named: "art.scnassets/player.scn")!
         let box = boxScene.rootNode.childNodes.first!
-        let pomodoro = Pomodoro(node: box, delegate: delegate)
+        let pomodoro = Pomodoro(node: box)
         pomodoro.position = SCNVector3(0, 0, 0)
         pomodoro.physicsBody = SCNPhysicsBody.dynamic()
         pomodoro.physicsBody?.categoryBitMask = Collider.player

@@ -13,6 +13,7 @@ import SceneKit
 protocol FruitDelegate {
     func shouldShoot(fruit: Fruit)
     func didTerminate(fruit: Fruit)
+    func isHit()
 }
 
 enum FruitType {
@@ -31,6 +32,7 @@ class Fruit: SCNNode {
     var delegate: FruitDelegate?
     var timer = Timer()
     var timerTime: Double = 1
+    var canBeHit = true
     var army = Army.pomodorino
     var damageInflicting: Float = 1
     var life: Float = 1
@@ -43,7 +45,6 @@ class Fruit: SCNNode {
         addChildNode(coreNode)
         setup()
     }
-
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -62,11 +63,17 @@ class Fruit: SCNNode {
     }
     
     func hit(damage: Float) {
-        life = life - damage
+        guard canBeHit else { return }
         isSleeping = false
+        life = life - damage
         if life <= 0 {
             deactivate()
             terminate()
+        } else {
+            canBeHit = false
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5, execute: {
+                self.canBeHit = true
+            })
         }
     }
     
@@ -146,6 +153,6 @@ class Plum: Fruit {
         army = .pomodorino
         damageInflicting = 1.5
         life = 20
-        bonus = BonusEvent(position: SCNVector3(92, 1, -140), type: .finish)
+        bonus = BonusEvent(position: position, type: .finish)
     }
 }

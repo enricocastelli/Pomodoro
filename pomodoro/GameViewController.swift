@@ -42,7 +42,8 @@ class GameViewController: UIViewController {
         scnView.scene = scene
         scnView.allowsCameraControl = false
         scnView.delegate = self
-        pomodoro = NodeCreator.createPomodoro(delegate: self)
+        pomodoro = NodeCreator.createPomodoro()
+        pomodoro.delegate = self
         scene.rootNode.addChildNode(pomodoro)
         addControllers()
         addBoundaries()
@@ -295,26 +296,9 @@ extension GameViewController: JoyDelegate {
     }
 }
 
-extension GameViewController: PomoDelegate {
-    
-    func isHit() {
-        DispatchQueue.main.async {
-            self.controller.lifeProgress.progress = self.pomodoro.life/10
-        }
-    }
-    
-    func isOver() {
-        DispatchQueue.main.async {
-            self.didFinish(over: true)
-        }
-    }
-    
-}
-
 extension GameViewController: FruitDelegate {
     
     func shouldShoot(fruit: Fruit) {
-        return
         guard scene.rootNode.childNodes.contains(fruit) else {
             fruit.deactivate()
             return }
@@ -333,10 +317,22 @@ extension GameViewController: FruitDelegate {
     }
     
     func didTerminate(fruit: Fruit) {
-        if let bonus = fruit.bonus {
-            if bonus.type == .finish {
-                addBonus(event: bonus)
+        if fruit == pomodoro {
+            DispatchQueue.main.async {
+                self.didFinish(over: true)
             }
+        } else {
+            if let bonus = fruit.bonus {
+                if bonus.type == .finish {
+                    addBonus(event: bonus)
+                }
+            }
+        }
+    }
+    
+    func isHit() {
+        DispatchQueue.main.async {
+            self.controller.lifeProgress.progress = self.pomodoro.life/10
         }
     }
     
